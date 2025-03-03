@@ -34,19 +34,18 @@
 ## 程序结构
 
 ```bash
-file-transfer
-├── /src
-│   └── file_transfer
-│       ├── /icon
-│       │   ├── icon.jpg
-│       │   └── config.json
-│       ├── __init__.py
-│       ├── config.py
-│       ├── file_utils.py
-│       ├── html.py
-│       ├── main.py
-│       ├── ui.py
-│       └── server.py
+FFTUSR
+├── /file_transfer
+│   ├── /icon
+│   │   ├── icon.jpg
+│   │   └── config.json
+│   ├── __init__.py 
+│   ├── config.py
+│   ├── file_utils.py
+│   ├── html.py
+│   ├── main.py
+│   ├── ui.py
+│   └── server.py
 └── /README.md
 ```
 
