@@ -74,7 +74,7 @@ FFTUSR
 使用以下命令安装所需的Python库:
 
 ```bash
-pip install gevent webbrowser socket platform subprocess psutil flask pillow json
+pip install gevent socket platform subprocess psutil flask pillow json
 ```
 
 ### 运行程序
