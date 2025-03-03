@@ -135,7 +135,7 @@ openssl genrsa -out CA.key 2048
 openssl req -new -key CA.key -out request.csr
 ```
 
-在此步骤中,您将被提示输入一些信息,例如国家、州、城市、组织名称等。确保填写这些信息,尤其是“Common Name”（CN），它通常是您的域名或服务器名称。
+在此步骤中,需要输入一些信息,例如国家、州、城市、组织名称等。确保填写这些信息,尤其是“Common Name”（CN），它通常是域名或服务器名称。
 
 4.创建自签名证书
 
@@ -145,7 +145,7 @@ openssl req -new -key CA.key -out request.csr
 openssl x509 -req -days 365 -in request.csr -signkey CA.key -out CA.crt
 ```
 
-5.完成后，您将获得以下文件：
+5.完成后，将获得以下文件：
 
 ```bash
 CA.key:私钥文件。
