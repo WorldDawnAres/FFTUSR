@@ -28,12 +28,14 @@ pip install gevent threading webbrowser socket platform subprocess psutil flask 
 ### 运行程序
 你可以使用以下任一方式来运行程序：
 
+#### 方法一
 使用 PyInstaller 打包程序：
 ```
 PyInstaller -F --add-data "icon/*;icon" -i file-transfer\icon\icon.jpg main.py
 ```
 然后在 dist 目录下找到可执行文件。
 
+#### 方法二
 直接运行 Python 脚本：
 ```
 python main.py
@@ -45,4 +47,5 @@ python main.py
 上传文件到指定的文件夹。
 ### 注意事项
 确保在程序运行目录下放置 .crt 和 .key 文件以启用HTTPS。
+
 默认情况下，程序使用HTTP协议。
