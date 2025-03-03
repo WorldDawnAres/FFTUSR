@@ -74,7 +74,7 @@ sudo yum install openssl      # CentOS/RHEL
 ```
 openssl genrsa -out CA.key 2048
 ```
-4. 创建证书签名请求 (CSR)
+3. 创建证书签名请求 (CSR)
 
 使用生成的私钥创建证书签名请求 (CSR)：
 ```
@@ -82,14 +82,13 @@ openssl req -new -key CA.key -out request.csr
 ```
 在此步骤中，您将被提示输入一些信息，例如国家、州、城市、组织名称等。确保填写这些信息，尤其是“Common Name”（CN），它通常是您的域名或服务器名称。
 
-5. 创建自签名证书
+4. 创建自签名证书
 
 使用 CSR 和私钥创建自签名证书。您可以指定证书的有效期（例如，365 天）：
 ```
 openssl x509 -req -days 365 -in request.csr -signkey CA.key -out CA.crt
 ```
-6. 结果文件
-完成后，您将获得以下文件：
+5. 完成后，您将获得以下文件：
 ```
 CA.key：私钥文件。
 request.csr：证书签名请求文件。
