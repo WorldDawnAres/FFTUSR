@@ -75,7 +75,7 @@ FFTUSR
 
 ```bash
 pip install gevent psutil flask pillow
-pip insatll PyInstaller(可选)
+pip install PyInstaller(可选)
 ```
 
 ### 运行程序
