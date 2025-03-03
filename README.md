@@ -9,9 +9,10 @@
 - 在局域网内共享指定文件夹
 - 允许其他设备上传文件
 - 自定义HTML界面用于文件下载和上传
-- 使用Tkinter制作的用户友好GUI
+- 使用Tkinter制作的用户GUI
 - 支持HTTPS协议（需提供证书文件）
 - 默认使用HTTP协议
+- 自定义检测网口设置
 - 自定义端口设置
 - 日志显示功能
 
@@ -28,13 +29,13 @@ pip install gevent threading webbrowser socket platform subprocess psutil flask 
 
 使用 PyInstaller 打包程序：
 
-pyinstaller --onefile main.py
+pyinstaller PyInstaller -F --add-data "icon/*;icon" -i file-transfer\icon\icon.jpg main.py
 然后在 dist 目录下找到可执行文件。
 
 直接运行 Python 脚本：
 
 python main.py
-示例用法
+用法
 启动程序后，选择上传文件夹和共享文件夹。
 点击“启动服务器”按钮。
 通过局域网内的其他设备访问共享文件夹。
