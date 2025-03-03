@@ -22,19 +22,22 @@
 
 使用以下命令安装所需的Python库：
 
-```bash
+```
 pip install gevent threading webbrowser socket platform subprocess psutil flask pillow json
+```
 运行程序
 你可以使用以下任一方式来运行程序：
 
 使用 PyInstaller 打包程序：
-
+```
 pyinstaller PyInstaller -F --add-data "icon/*;icon" -i file-transfer\icon\icon.jpg main.py
+```
 然后在 dist 目录下找到可执行文件。
 
 直接运行 Python 脚本：
-
+```
 python main.py
+```
 用法
 启动程序后，选择上传文件夹和共享文件夹。
 点击“启动服务器”按钮。
