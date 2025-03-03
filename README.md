@@ -30,7 +30,7 @@ pip install gevent threading webbrowser socket platform subprocess psutil flask 
 
 使用 PyInstaller 打包程序：
 ```
-pyinstaller PyInstaller -F --add-data "icon/*;icon" -i file-transfer\icon\icon.jpg main.py
+PyInstaller -F --add-data "icon/*;icon" -i file-transfer\icon\icon.jpg main.py
 ```
 然后在 dist 目录下找到可执行文件。
 
