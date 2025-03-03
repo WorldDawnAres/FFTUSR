@@ -82,23 +82,22 @@ openssl req -new -key CA.key -out request.csr
 ```
 在此步骤中，您将被提示输入一些信息，例如国家、州、城市、组织名称等。确保填写这些信息，尤其是“Common Name”（CN），它通常是您的域名或服务器名称。
 
-6. 创建自签名证书
+5. 创建自签名证书
 
 使用 CSR 和私钥创建自签名证书。您可以指定证书的有效期（例如，365 天）：
 ```
 openssl x509 -req -days 365 -in request.csr -signkey CA.key -out CA.crt
 ```
-5. 结果文件
+6. 结果文件
 完成后，您将获得以下文件：
 ```
 CA.key：私钥文件。
 request.csr：证书签名请求文件。
 CA.crt：自签名证书文件。
 ```
-#### 添加证书方法
+#### 在程序执行目录添加证书
+将创建证书步骤完成后将文件复制到如下示例文件夹下来开启HTTPS
 ```
-/my_project
-│
 ├── /src                  # 下载exe程序后存放文件夹
 │   ├── FFTUSR.v1.0.exe   # 文件传输程序
 │   ├── CA.crt            # 证书文件
