@@ -1,5 +1,5 @@
 # 文件共享与传输程序
-[Download link](https://github.com/WorldDawnAres/FFTUSR/releases
+[Download link](https://github.com/WorldDawnAres/FFTUSR/releases)
 ## 介绍
 
 这个程序允许在局域网内共享指定文件夹，并支持其他设备上传文件到运行该程序的设备。用户可以通过自定义的HTML界面下载和上传文件。程序使用Tkinter制作GUI界面，并支持HTTPS协议（只需在程序运行目录放置 .crt 和 .key 文件）。默认情况下，程序使用HTTP协议，用户可以选择自定义端口来开启服务。在程序运行时，用户可以选择上传文件夹和共享文件夹，以自定义使用的目录，最后通过启动服务器来实现文件共享。程序的GUI界面支持日志显示，便于用户查看操作记录。
