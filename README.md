@@ -28,7 +28,7 @@
 
 此外程序还可以切换浅色和深色模式。
 
-<img src="./Pictures/2.png" alt="Screenshot 1" width="600" />
+<img src="./Pictures/3.png" alt="Screenshot 1" width="600" />
 
 ## 安装与运行
 
