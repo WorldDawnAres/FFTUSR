@@ -7,14 +7,14 @@
 
 ## 功能
 
-- 在局域网内共享指定文件夹
-- 允许其他设备上传文件
-- 在程序的HTML界面用于文件下载和上传
-- 有上传进度条
-- 根据程序运行目录自动切换http或HTTPS协议（使用HTTPS需提供证书文件，默认使用HTTP）
-- 自动检测网口ip (可自定义选择启动程序的ip)
-- 可自定义端口设置 (默认12345)
-- 日志显示功能
+- ✔️ 在局域网内共享指定文件夹
+- ✔️ 允许其他设备上传文件
+- ✔️ 在程序的HTML界面用于文件下载和上传
+- ✔️ 有上传进度条
+- ✔️ 根据程序运行目录自动切换http或HTTPS协议（使用HTTPS需提供证书文件，默认使用HTTP）
+- ✔️ 自动检测网口ip (可自定义选择启动程序的ip)
+- ✔️ 可自定义端口设置 (默认端口为12345)
+- ✔️ 日志显示功能
 
 ## 介绍
 
@@ -55,14 +55,54 @@ PyInstaller -F --add-data "icon/*;icon" -i file-transfer\icon\icon.jpg main.py
 python main.py
 ```
 ### 用法
-#### 添加证书
+
+#### 创建证书 (使用自签名证书)
+1. 安装 OpenSSL
+
+Windows：可以从 OpenSSL for Windows 下载并安装。
+
+macOS：可以通过 Homebrew 安装：
+```
+brew install openssl
+```
+Linux：大多数发行版都可以通过包管理器安装：
+```
+sudo apt-get install openssl  # Debian/Ubuntu
+sudo yum install openssl      # CentOS/RHEL
+```
+2. 创建私钥
+```
+openssl genrsa -out CA.key 2048
+```
+4. 创建证书签名请求 (CSR)
+
+使用生成的私钥创建证书签名请求 (CSR)：
+```
+openssl req -new -key CA.key -out request.csr
+```
+在此步骤中，您将被提示输入一些信息，例如国家、州、城市、组织名称等。确保填写这些信息，尤其是“Common Name”（CN），它通常是您的域名或服务器名称。
+
+6. 创建自签名证书
+
+使用 CSR 和私钥创建自签名证书。您可以指定证书的有效期（例如，365 天）：
+```
+openssl x509 -req -days 365 -in request.csr -signkey CA.key -out CA.crt
+```
+5. 结果文件
+完成后，您将获得以下文件：
+```
+CA.key：私钥文件。
+request.csr：证书签名请求文件。
+CA.crt：自签名证书文件。
+```
+#### 添加证书方法
 ```
 /my_project
 │
 ├── /src                  # 下载exe程序后存放文件夹
-│   ├── FFTUSR.v1.0.exe # 文件传输程序
-│   ├── CA.crt           # 证书文件
-│   ├── CA.key        # 密钥
+│   ├── FFTUSR.v1.0.exe   # 文件传输程序
+│   ├── CA.crt            # 证书文件
+│   ├── CA.key            # 密钥文件
 ```
 1.启动程序后，点击选择上传文件夹和选择共享文件夹。
 
