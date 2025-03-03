@@ -74,7 +74,8 @@ FFTUSR
 使用以下命令安装所需的Python库:
 
 ```bash
-pip install gevent psutil flask pillow json
+pip install gevent psutil flask pillow
+pip insatll PyInstaller(可选)
 ```
 
 ### 运行程序
