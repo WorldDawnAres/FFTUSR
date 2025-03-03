@@ -38,11 +38,11 @@ PyInstaller -F --add-data "icon/*;icon" -i file-transfer\icon\icon.jpg main.py
 ```
 python main.py
 ```
-用法
+###用法
 启动程序后，选择上传文件夹和共享文件夹。
 点击“启动服务器”按钮。
 通过局域网内的其他设备访问共享文件夹。
 上传文件到指定的文件夹。
-注意事项
+###注意事项
 确保在程序运行目录下放置 .crt 和 .key 文件以启用HTTPS。
 默认情况下，程序使用HTTP协议。
