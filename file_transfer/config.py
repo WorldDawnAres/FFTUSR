@@ -59,9 +59,12 @@ class ConfigManager:
 
     def get_target_folder(self):
         return self.config.get("target_folder", os.path.join(os.getcwd(), "uploads"))
- 
-image = Image.open(get_resource_path("icon\icon.jpg")) 
-CONFIG_PATH = get_resource_path("icon\config.json")
+
+image_path = os.path.join("icon", "icon.jpg")
+image = Image.open(get_resource_path(image_path))
+
+config_path = os.path.join("icon", "config.json")
+CONFIG_PATH = get_resource_path(config_path)
 
 
 '''
@@ -70,8 +73,8 @@ image=Image.open("D:\\VSCode\\program\\PythonProgram\\file-transfer\\icon\\icon.
 '''
 cert_file,key_file = find_cert_and_key()
 
-print(cert_file)
-print(key_file)
+print("证书文件路径：",cert_file)
+print("密钥文件路径：",key_file)
 
 config_manager = ConfigManager(CONFIG_PATH)
 DEFAULT_SHARED_FOLDER = os.path.abspath(config_manager.config.get("shared_folder", os.getcwd()))
