@@ -112,9 +112,3 @@ def log_response_info(response):
 @app.route('/refresh')
 def refresh():
     return jsonify({"message": "页面已刷新"})
-'''
-@app.before_request
-def before_request():
-    # 如果请求是 HTTP（不是 HTTPS），就重定向到 HTTPS
-    if not request.is_secure:
-        return redirect(request.url.replace("http://", "https://"), code=301)'''
