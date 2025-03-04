@@ -16,7 +16,7 @@
 
 ## 下载地址
 
-[点击此处选择下载](https://github.com/WorldDawnAres/FFTUSR/releases)
+[点击此处进行下载](https://github.com/WorldDawnAres/FFTUSR/releases)
 
 > .exe 为Windows执行文件;不带扩展的为Linux可执行文件
 > 
