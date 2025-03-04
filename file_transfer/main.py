@@ -6,7 +6,7 @@ from file_transfer import config,ui,file_utils
 def main():
     root = tk.Tk()
     root.title("文件传输选项")
-    root.geometry("650x670")
+    root.geometry("760x670")
     try:
         image = config.image
         photo = ImageTk.PhotoImage(image)
