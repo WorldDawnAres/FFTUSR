@@ -59,13 +59,15 @@ FFTUSR
 
 ![Screenshot 1](./Pictures/1.png "可选标题")
 
-用户可以通过自定义的HTML界面下载和上传文件。用户可以选择自定义端口来开启服务。
-在程序运行时,用户可以点击选择共享文件夹和选择上传文件夹来自定义选择程序使用的文件夹,最后通过启动服务器来实现文件共享。
-程序的GUI界面支持日志显示,便于用户查看操作记录。
+>用户可以通过自定义的HTML界面下载和上传文件。用户可以选择自定义端口来开启服务。
+>
+>在程序运行时,用户可以点击选择共享文件夹和选择上传文件夹来自定义选择程序使用的文件夹,最后通过启动服务器来实现文件共享。
+>
+>程序的GUI界面支持日志显示,便于用户查看操作记录。
 
 ![Screenshot 1](./Pictures/2.png "可选标题")
 
-此外程序还可以切换浅色和深色模式。
+>此外程序还可以切换浅色和深色模式。
 
 ![Screenshot 1](./Pictures/3.png "可选标题")
 
@@ -73,7 +75,7 @@ FFTUSR
 
 ### 安装python库
 
-使用以下命令安装所需的Python库:
+>使用以下命令安装所需的Python库:
 
 ```bash
 pip install gevent psutil flask pillow
@@ -82,21 +84,21 @@ pip install PyInstaller(可选)
 
 ### 运行程序
 
-你可以使用以下任一方式来运行程序：
+>你可以使用以下任一方式来运行程序：
 
 #### 方法一
 
-使用 PyInstaller 打包程序：
+>使用 PyInstaller 打包程序：
 
 ```bash
 PyInstaller -F --add-data "icon/*;icon" -i file-transfer\icon\icon.jpg main.py
 ```
 
-然后在 dist 目录下找到可执行文件。
+>然后在 dist 目录下找到可执行文件。
 
 #### 方法二
 
-直接运行 Python 脚本：
+>直接运行 Python 脚本：
 
 ```bash
 python main.py
