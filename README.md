@@ -19,7 +19,7 @@
 [点击此处选择下载](https://github.com/WorldDawnAres/FFTUSR/releases)
 
 > .exe 为Windows执行文件;不带扩展的为Linux可执行文件
-
+> 
 > 喜欢这个项目吗？请给我留个星 ⭐，让更多人看到它！感谢你的支持！
 
 ## 功能
