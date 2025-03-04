@@ -18,7 +18,9 @@
 
 [点击此处进行下载](https://github.com/WorldDawnAres/FFTUSR/releases)
 
->打包文件Windows使用Python3.10.11版本打包可能不支持Windows7以下系统使用，Linux使用Python3.9.13版本打包。
+> releases中.exe使用Python3.10.11版本打包，可能不支持Windows7以下系统使用
+>
+> Linux二进制文件则使用Python3.9.13版本打包。
 >
 > .exe 为Windows执行文件;不带扩展的为Linux可执行文件
 > 
