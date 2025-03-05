@@ -68,8 +68,8 @@ CONFIG_PATH = get_resource_path(config_path)
 
 
 '''
-CONFIG_PATH = "D:\\VSCode\\program\\PythonProgram\\file-transfer\\icon\\config.json"
-image=Image.open("D:\\VSCode\\program\\PythonProgram\\file-transfer\\icon\\icon.jpg")
+CONFIG_PATH = "D:\\VSCode\\project\\FFTUSR\\file_transfer\\icon\\config.json"
+image=Image.open("D:\\VSCode\\project\\FFTUSR\\file_transfer\\icon\\icon.jpg")
 '''
 cert_file,key_file = find_cert_and_key()
 
