@@ -21,10 +21,28 @@ sdist/
 var/
 wheels/
 share/python-wheels/
+include/
+Scripts/
+tcl/
+DLLs/
+file_transfer/fonts/
 *.egg-info/
 .installed.cfg
 *.egg
+*.bat
+*.dll
+*._pth
+*.py
+*.exe
+*.zip
+*.cat
+*.rst
+!*/**/*.dll
+!*/**/*.py
+!*/**/*.exe
+!*/**/*.zip
 MANIFEST
+LICENSE.txt
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
