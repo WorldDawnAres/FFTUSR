@@ -25,6 +25,8 @@ include/
 Scripts/
 tcl/
 DLLs/
+Lib/
+Include/
 file_transfer/fonts/
 *.egg-info/
 .installed.cfg
@@ -37,10 +39,6 @@ file_transfer/fonts/
 *.zip
 *.cat
 *.rst
-!*/**/*.dll
-!*/**/*.py
-!*/**/*.exe
-!*/**/*.zip
 MANIFEST
 LICENSE.txt
 
