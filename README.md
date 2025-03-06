@@ -1,5 +1,7 @@
 # 目录
 
+**Read this in other languages: [English](README_en.md), [中文](README.md).**
+
 - [下载地址](#下载地址)
 - [功能](#功能)
 - [程序结构](#程序结构)
