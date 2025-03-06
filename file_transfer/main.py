@@ -36,7 +36,7 @@ def get_items(folder_path):
         for filename in os.listdir(folder_path):
             item_full_path = os.path.join(folder_path, filename)
             is_dir = os.path.isdir(item_full_path)
-            relative_path = os.path.relpath(item_full_path, config.SHARED_FOLDER)  # 生成相对路径
+            relative_path = os.path.relpath(item_full_path, config.SHARED_FOLDER)
             items.append({'name': filename, 'path': relative_path, 'is_dir': is_dir})
             #file_utils.update_display(f"Item added: {relative_path}")
     return items

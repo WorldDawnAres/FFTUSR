@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template_string, request, send_from_directory, redirect
+from flask import Flask, jsonify, render_template_string, request, send_from_directory
 from file_transfer import file_utils,main,config,html
 import os
 
