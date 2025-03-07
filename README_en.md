@@ -1,6 +1,6 @@
 # Catalogue
 
-**其他语言版本: [English](README_en.md), [中文](README.md).**
+**[English](README_en.md) | [简体中文](README.md)**
 
 - [Catalogue](#catalogue)
   - [Download link](#download-link)
@@ -29,14 +29,14 @@
 
 ## Function
 
-- ✔️ Share specified folders within the local area network
-- ✔️ Other devices can upload files on HTML web pages
-- ✔️ Supports Windows and Linux
-- ✔️ Added upload progress bar for easy confirmation of transmission status
-- ✔️ Automatically switch between HTTP or HTTPS protocols based on the program's running directory (using HTTPS requires providing a certificate file, HTTP is used by default)
-- ✔️ Automatically detect network port IP (customizable IP for program startup)
-- ✔️ Customizable port number (default port is 12345)
-- ✔️ Log display function
+- [x] Share specified folders within the local area network
+- [x] Other devices can upload files on HTML web pages
+- [x] Supports Windows and Linux
+- [x] Added upload progress bar for easy confirmation of transmission status
+- [x] Automatically switch between HTTP or HTTPS protocols based on the program's running directory (using HTTPS requires providing a certificate file, HTTP is used by default)
+- [x] Automatically detect network port IP (customizable IP for program startup)
+- [x] Customizable port number (default port is 12345)
+- [x] Log display function
 
 ## Program structure
 
