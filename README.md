@@ -20,6 +20,8 @@
 
 [点击此处进行下载](https://github.com/WorldDawnAres/FFTUSR/releases)
 
+>windows用户可根据喜好选择新版或旧版使用,Linux用户请使用新版程序
+>
 > releases中.exe使用Python3.10.11版本打包，可能不支持Windows7以下系统使用
 >
 > Linux二进制文件则使用Python3.9.13版本打包。
@@ -60,7 +62,7 @@ FFTUSR
 
 >这个程序允许在局域网内共享指定文件夹,并支持其他设备上传文件到运行该程序的设备。
 >
->程序使用Tkinter制作GUI界面,并支持HTTPS协议(只需在程序运行目录放置 .crt 和 .key 文件)。
+>旧版程序使用Tkinter制作GUI界面,并支持HTTPS协议(只需在程序运行目录放置 .crt 和 .key 文件)。
 >
 >用户在使用时不选择共享文件夹和上传文件夹时会自动选择C盘和D盘为默认启动文件夹并且程序会默认使用HTTP协议。
 
@@ -78,6 +80,16 @@ FFTUSR
 
 ![Screenshot 1](./Pictures/3.png "可选标题")
 
+>新版程序GUI使用PySide6制作，功能与旧版相同，用于解决Linux下Tkinter显示问题。
+
+![Screenshot 1](./Pictures/4.png "可选标题")
+
+![Screenshot 1](./Pictures/5.png "可选标题")
+
+![Screenshot 1](./Pictures/6.png "可选标题")
+
+![Screenshot 1](./Pictures/7.png "可选标题")
+
 ## 安装和运行方式
 
 ### 安装python库
@@ -85,8 +97,14 @@ FFTUSR
 >使用以下命令安装所需的Python库:
 
 ```bash
-pip install gevent psutil flask pillow
+pip install gevent psutil flask PySide6
 pip install PyInstaller(可选)
+```
+
+>旧版不需要PySide6库，但需安装pillow库。
+
+```bash
+pip install gevent psutil flask pillow
 ```
 
 ### 运行程序
@@ -170,7 +188,7 @@ CA.crt:自签名证书文件。
 
 ```bash
 ├── /src                  # 下载exe程序后存放文件夹
-│   ├── FFTUSR.v1.0.exe   # 文件传输程序
+│   ├── FFTUSR.v1.1.exe   # 文件传输程序
 │   ├── CA.crt            # 证书文件
 │   ├── CA.key            # 密钥文件
 ```

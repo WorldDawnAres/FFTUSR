@@ -21,6 +21,8 @@
 
 [Click here to download](https://github.com/WorldDawnAres/FFTUSR/releases)
 
+>Windows users can choose between the new or old version according to their preferences, while Linux users are advised to use the new version of the program
+>
 > The .exe file in releases was packaged using Python 3.10.11 and may not support systems running Windows 7 or earlier.
 >
 > The Linux binary was packaged using Python version 3.9.13.
@@ -61,7 +63,7 @@ FFTUSR
 
 >This program allows designated folders to be shared within a local network and supports file uploads from other devices to the device running this program.
 >
->The program uses Tkinter to create the GUI interface and supports HTTPS protocol (just place .crt and .key files in the program's running directory).
+>The old version of the program uses Tkinter to create the GUI interface and supports HTTPS protocol (simply place the. krt and. key files in the program's running directory).
 >
 >When users do not select shared folders or upload folders, the program automatically sets C drive and D drive as default startup folders and uses HTTP protocol by default.
 
@@ -79,6 +81,16 @@ FFTUSR
 
 ![Screenshot 1](./Pictures/3.png "可选标题")
 
+>The new version of the program GUI is made using PySide6, with the same functionality as the old version, and is used to solve Tkinter display problems under Linux.
+
+![Screenshot 1](./Pictures/4.png "可选标题")
+
+![Screenshot 1](./Pictures/5.png "可选标题")
+
+![Screenshot 1](./Pictures/6.png "可选标题")
+
+![Screenshot 1](./Pictures/7.png "可选标题")
+
 ## Installation and operation mode
 
 ### Install Python library
@@ -88,6 +100,12 @@ FFTUSR
 ```bash
 pip install gevent psutil flask pillow
 pip install PyInstaller(optional)
+```
+
+>The old version does not require the PySide6 library, but requires the installation of the Pillow library.
+
+```bash
+pip install gevent psutil flask pillow
 ```
 
 ### Run a program
