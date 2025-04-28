@@ -34,7 +34,6 @@ file_transfer/fonts/
 *.bat
 *.dll
 *._pth
-*.py
 *.exe
 *.zip
 *.cat

@@ -1,5 +1,4 @@
 import os,sys,json
-from PIL import Image
 
 def get_resource_path(relative_path):
     if hasattr(sys, '_MEIPASS'):
@@ -42,17 +41,14 @@ class ConfigManager:
     def save_config(self):
         with open(self.config_path, "w", encoding="utf-8") as f:
             json.dump(self.config, f, indent=4, ensure_ascii=False)
-        print("配置文件已保存")
 
     def update_shared_folder(self, shared_folder):
         self.config["shared_folder"] = shared_folder
         self.save_config()
-        print(f"共享文件夹路径已更新{shared_folder}")
 
     def update_target_folder(self, target_folder):
         self.config["target_folder"] = target_folder
         self.save_config()
-        print(f"上传文件夹路径已更新{target_folder}")
 
     def get_shared_folder(self):
         return self.config.get("shared_folder", os.getcwd())
@@ -60,17 +56,15 @@ class ConfigManager:
     def get_target_folder(self):
         return self.config.get("target_folder", os.path.join(os.getcwd(), "uploads"))
 
-image_path = os.path.join("icon", "icon.jpg")
-image = Image.open(get_resource_path(image_path))
+image_path = os.path.join("icon", "icon.ico")
+image = get_resource_path(image_path)
 
 config_path = os.path.join("icon", "config.json")
 CONFIG_PATH = get_resource_path(config_path)
 
+# CONFIG_PATH = "D:/VSCode/environmental/project/FFTUSR/file_transfer/icon/config.json"
+# image="D:/VSCode/environmental/project/FFTUSR/file_transfer/icon/icon.ico"
 
-'''
-CONFIG_PATH = "D:/VSCode/environmental/project/FFTUSR/file_transfer/icon/config.json"
-image=Image.open("D:/VSCode/environmental/project/FFTUSR/file_transfer/icon/icon.jpg")
-'''
 cert_file,key_file = find_cert_and_key()
 
 print("证书文件路径：",cert_file)

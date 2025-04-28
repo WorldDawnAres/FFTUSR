@@ -1,6 +1,26 @@
 from flask import Flask, jsonify, render_template_string, request, send_from_directory
-from file_transfer import file_utils,main,config,html
+from file_transfer import config,html
 import os
+
+def get_target_subfolders(target_folder_path):
+    subfolders = []
+    if os.path.isdir(target_folder_path):
+        for filename in os.listdir(target_folder_path):
+            item_full_path = os.path.join(target_folder_path, filename)
+            if os.path.isdir(item_full_path):
+                subfolders.append(filename)
+    return subfolders
+
+def get_items(folder_path):
+    items = []
+    if os.path.isdir(folder_path):
+        for filename in os.listdir(folder_path):
+            item_full_path = os.path.join(folder_path, filename)
+            is_dir = os.path.isdir(item_full_path)
+            relative_path = os.path.relpath(item_full_path, config.SHARED_FOLDER)
+            items.append({'name': filename, 'path': relative_path, 'is_dir': is_dir})
+            #print(f"Item added: {relative_path}")
+    return items
 
 app = Flask(__name__)
 @app.route('/files')
@@ -12,8 +32,8 @@ def list_files(path=""):
         shared_folder_path = config.SHARED_FOLDER
         target_folder_path = config.TARGET_FOLDER
         
-        subfolders = main.get_target_subfolders(target_folder_path)
-        items = main.get_items(os.path.join(shared_folder_path, path))
+        subfolders = get_target_subfolders(target_folder_path)
+        items = get_items(os.path.join(shared_folder_path, path))
 
         return render_template_string(html.FILE_LIST_HTML, items=items, subfolders=subfolders, current_path=path)
     except Exception as e:
@@ -25,7 +45,7 @@ def list_files_json(path=""):
     try:
         config.SHARED_FOLDER = config.config_manager.get_shared_folder()
         shared_folder_path = config.SHARED_FOLDER
-        items = main.get_items(os.path.join(shared_folder_path, path))
+        items = get_items(os.path.join(shared_folder_path, path))
 
         file_list = [
             {
@@ -74,13 +94,13 @@ def upload_file():
 def download_file(filename):
     try:
         file_path = os.path.join(config.SHARED_FOLDER, filename)
-        file_utils.update_display(f"尝试下载文件: {file_path}")
+        print(f"尝试下载文件: {file_path}")
         if not os.path.exists(file_path):
-            file_utils.update_display(f"文件不存在: {file_path}")
+            print(f"文件不存在: {file_path}")
             return jsonify({"error": "文件不存在"}), 404
         return send_from_directory(config.SHARED_FOLDER, filename, as_attachment=True)
     except Exception as e:
-        file_utils.update_display(f"下载文件时出错: {str(e)}")
+        print(f"下载文件时出错: {str(e)}")
         return jsonify({"error": f"下载文件时出错: {str(e)}"}), 500
     
 @app.route('/shutdown', methods=['POST'])
@@ -89,10 +109,10 @@ def shutdown():
     target_folder="C:\\"
     config.config_manager.update_shared_folder(shared_folder)
     config.config_manager.update_target_folder(target_folder)
-    file_utils.update_display("正在关闭服务器...")
+    print("正在关闭服务器...")
     func = request.environ.get('werkzeug.server.shutdown')
     if func is None:
-        file_utils.update_display("无法使用 Werkzeug 关闭服务器，正在强制关闭...")
+        print("无法使用 Werkzeug 关闭服务器，正在强制关闭...")
         os._exit(0)
     else:
         func()
@@ -101,12 +121,12 @@ def shutdown():
 @app.before_request
 def log_request_info():
     log_message = f'{request.remote_addr} - - [{request.date}] "{request.method} {request.path} HTTP/{request.environ.get("SERVER_PROTOCOL")}" {request.status_code if hasattr(request, "status_code") else ""}'
-    file_utils.update_display(log_message)
+    print(log_message)
 
 @app.after_request
 def log_response_info(response):
     log_message = f'{request.remote_addr} - - [{request.date}] "{request.method} {request.path} HTTP/{request.environ.get("SERVER_PROTOCOL")}" {response.status_code}'
-    file_utils.update_display(log_message)
+    print(log_message)
     return response
 
 @app.route('/refresh')

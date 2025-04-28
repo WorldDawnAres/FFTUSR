@@ -1,137 +1,200 @@
-import tkinter as tk
-from file_transfer import file_utils,config,tool
-import threading
+from PySide6.QtWidgets import (
+    QApplication, QMainWindow, QMessageBox, QStyleFactory, QLabel, QComboBox,
+    QDialogButtonBox, QDialog, QVBoxLayout, QWidget, QInputDialog
+)
+from PySide6.QtGui import QIcon,QAction,QPalette, QColor
+from file_transfer.LogWidget import LogWidget
+from file_transfer.config import image
+from file_transfer import tool
 
 flask_thread = None
 
-light_mode_colors = {
-    "bg": "#ffffff",
-    "fg": "#000000",
-    "button_bg": "#f0f0f0",
-    "button_fg": "#000000",
-    "text_bg": "#ffffff",
-    "text_fg": "#000000",
-}
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("文件传输工具")
+        self.resize(700, 500)
+        self.set_dark_mode()
 
-dark_mode_colors = {
-    "bg": "#2e2e2e",
-    "fg": "#ffffff",
-    "button_bg": "#4a4a4a",
-    "button_fg": "#ffffff",
-    "text_bg": "#333333",
-    "text_fg": "#ffffff",
-}
+        self.setWindowIcon(QIcon(image))
 
-current_mode = "dark"
-
-def toggle_mode(root, button_frame,log_text,mode_button,interface_frame):
-    global current_mode
-    if current_mode == "light":
-        apply_dark_mode(root, button_frame,log_text,mode_button,interface_frame)
-        mode_button.config(text="切换到浅色模式")
-        current_mode = "dark"
-    else:
-        apply_light_mode(root,button_frame,log_text,mode_button,interface_frame)
-        mode_button.config(text="切换到暗色模式")
-        current_mode = "light"
-
-def apply_light_mode(root, button_frame,log_text,mode_button,interface_frame):
-    root.config(bg=light_mode_colors["bg"])
-    button_frame.config(bg=light_mode_colors["bg"])
-    interface_frame.config(bg=light_mode_colors["bg"])
-    log_text.config(bg=light_mode_colors["text_bg"], fg=light_mode_colors["text_fg"])
+        self.interface_frame = tool.get_local_ip()
+        self.port_entry = 12345
+        self.init_ui()
+        self.create_menu()
     
-    for button in button_frame.winfo_children():
-        button.config(bg=light_mode_colors["button_bg"], fg=light_mode_colors["button_fg"])
-    for button in interface_frame.winfo_children():
-        button.config(bg=light_mode_colors["button_bg"], fg=light_mode_colors["button_fg"])
+    def init_ui(self):
+        layout = QVBoxLayout()
+
+        self.interface_frame = QLabel(f"当前指定网络接口ip：{self.interface_frame}")
+        layout.addWidget(self.interface_frame)
+
+        self.port_label = QLabel(f"当前指定端口号：{self.port_entry}")
+        layout.addWidget(self.port_label)
+
+        self.log_widget = LogWidget()
+        layout.addWidget(self.log_widget)
+
+        central_widget = QWidget()
+        central_widget.setLayout(layout)
+        self.setCentralWidget(central_widget)
+
+    def create_menu(self):
+        menubar = self.menuBar()
+
+        select_menu= menubar.addMenu("文件夹")
+
+        select_folder = QAction("选择共享文件夹", self)
+        select_folder.triggered.connect(lambda: tool.select_shared_folder(self))
+        select_menu.addAction(select_folder)
+
+        select_folder1 = QAction("选择上传文件夹", self)
+        select_folder1.triggered.connect(lambda: tool.select_target_folder(self))
+        select_menu.addAction(select_folder1)
+
+        server_menu = menubar.addMenu("服务器")
+
+        interface_frame_action = QAction("选择接口", self)
+        interface_frame_action.triggered.connect(self.select_interface)
+        server_menu.addAction(interface_frame_action)
+
+        select_port_action = QAction("选择端口号", self)
+        select_port_action.triggered.connect(self.select_port)
+        server_menu.addAction(select_port_action)
+
+        server_start = QAction("启动服务器", self)
+        server_start.triggered.connect(lambda: tool.start_server(self.port_entry))
+        server_menu.addAction(server_start)
+
+        exit_server = QAction("停止服务器", self)
+        exit_server.triggered.connect(lambda: tool.stop_flask_server())
+        server_menu.addAction(exit_server)
+
+        theme_menu = menubar.addMenu("主题")
+
+        light_action = QAction("浅色模式", self)
+        light_action.triggered.connect(self.set_light_mode)
+        theme_menu.addAction(light_action)
+
+        dark_action = QAction("深色模式", self)
+        dark_action.triggered.connect(self.set_dark_mode)
+        theme_menu.addAction(dark_action)
+
+        about_action = QAction("关于", self)
+        about_action.triggered.connect(self.show_about)
+        menubar.addAction(about_action)
     
-    mode_button.config(bg=light_mode_colors["button_bg"], fg=light_mode_colors["button_fg"])
+    def set_dark_mode(self):
+        dark_palette = QPalette()
+        dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
+        dark_palette.setColor(QPalette.WindowText, QColor(255, 255, 255))
+        dark_palette.setColor(QPalette.Base, QColor(35, 35, 35))
+        dark_palette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+        dark_palette.setColor(QPalette.ToolTipBase, QColor(255, 255, 255))
+        dark_palette.setColor(QPalette.ToolTipText, QColor(255, 255, 255))
+        dark_palette.setColor(QPalette.Text, QColor(255, 255, 255))
+        dark_palette.setColor(QPalette.Button, QColor(53, 53, 53))
+        dark_palette.setColor(QPalette.ButtonText, QColor(255, 255, 255))
+        dark_palette.setColor(QPalette.BrightText, QColor(255, 0, 0))
+        dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
+        dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+        dark_palette.setColor(QPalette.HighlightedText, QColor(0, 0, 0))
 
-def apply_dark_mode(root, button_frame,log_text,mode_button,interface_frame):
-    root.config(bg=dark_mode_colors["bg"])
-    button_frame.config(bg=dark_mode_colors["bg"])
-    interface_frame.config(bg=dark_mode_colors["bg"])
-    log_text.config(bg=dark_mode_colors["text_bg"], fg=dark_mode_colors["text_fg"])
+        QApplication.instance().setPalette(dark_palette)
+        QApplication.instance().setStyle(QStyleFactory.create("Fusion"))
 
-    for button in button_frame.winfo_children():
-        button.config(bg=dark_mode_colors["button_bg"], fg=dark_mode_colors["button_fg"])
-    for button in interface_frame.winfo_children():
-        button.config(bg=dark_mode_colors["button_bg"], fg=dark_mode_colors["button_fg"])
+    def set_light_mode(self):
+        light_palette = QPalette()
+        light_palette.setColor(QPalette.Window, QColor(240, 240, 240))
+        light_palette.setColor(QPalette.WindowText, QColor(0, 0, 0))
+        light_palette.setColor(QPalette.Base, QColor(255, 255, 255))
+        light_palette.setColor(QPalette.AlternateBase, QColor(240, 240, 240))
+        light_palette.setColor(QPalette.ToolTipBase, QColor(0, 0, 0))
+        light_palette.setColor(QPalette.ToolTipText, QColor(0, 0, 0))
+        light_palette.setColor(QPalette.Text, QColor(0, 0, 0))
+        light_palette.setColor(QPalette.Button, QColor(240, 240, 240))
+        light_palette.setColor(QPalette.ButtonText, QColor(0, 0, 0))
+        light_palette.setColor(QPalette.BrightText, QColor(255, 0, 0))
+        light_palette.setColor(QPalette.Link, QColor(42, 130, 218))
+        light_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+        light_palette.setColor(QPalette.HighlightedText, QColor(255, 255, 255))
+
+        app = QApplication.instance()
+        app.setPalette(light_palette)
+        app.setStyle(QStyleFactory.create("Fusion"))
     
-    mode_button.config(bg=dark_mode_colors["button_bg"], fg=dark_mode_colors["button_fg"])
-
-def create_network_interface_selector(root, button_frame):
-    interfaces = tool.get_network_interfaces()
-    if not interfaces:
-        file_utils.update_display("没有可用的网络接口", "red")
-        return
-
-    interface_names = [f"{iface[0]} - {iface[1]}" for iface in interfaces]
-
-    label = tk.Label(button_frame, text="请选择网络接口：")
-    label.pack(side=tk.LEFT, padx=10)
+    def select_interface(self):
+        dialog = InterfaceSelectorDialog(self)
+        dialog.exec()
+        if dialog.selected_interface:
+            self.update_interface_label(dialog.selected_interface)
     
-    interface_listbox = tk.Listbox(button_frame, height=6, width=50)
-    for interface in interface_names:
-        interface_listbox.insert(tk.END, interface)
+    def update_interface_label(self, selected_interface):
+        self.interface_frame.setText(f"当前指定网络接口：{selected_interface}")
+    
+    def select_port(self):
+        port, ok = QInputDialog.getInt(self, "设置端口", "请输入端口号：", self.port_entry, 0, 65535)
+        if ok:
+            self.port_entry = port
+            self.update_port_label()
 
-    interface_listbox.bind("<<ListboxSelect>>", lambda event: tool.on_interface_select(interface_listbox, event))
+    def update_port_label(self):
+        self.port_label.setText(f"当前指定端口号：{self.port_entry}")
+        print(f"当前指定端口号：{self.port_entry}")
 
-    interface_listbox.pack(side=tk.LEFT, padx=10)
+    def show_about(self):
+        QMessageBox.about(
+            self,
+            "关于",
+            "本程序为之前版本的移植版\n\n"
+            "支持老版本所有功能(自定义选择文件夹，自定义端口，自定义网络接口等)\n\n"
+            "版本：v1.1\n\n"
+            )
 
-    return interface_listbox
+class InterfaceSelectorDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("选择网络接口")
 
-def create_tkinter_window(root):
+        interfaces = tool.get_network_interfaces()
+        if not interfaces:
+            self.show_no_interfaces_message()
+            return
+        
+        interface_names = [f"{iface[0]} - {iface[1]}" for iface in interfaces]
 
-    button_frame = tk.Frame(root)
-    button_frame.pack(pady=10)
+        layout = QVBoxLayout(self)
 
-    interface_frame = tk.Frame(root)
-    interface_frame.pack(pady=10)
+        label = QLabel("请选择网络接口：", self)
+        layout.addWidget(label)
 
-    global selected_ip
-    create_network_interface_selector(root, interface_frame)
+        self.interface_combobox = QComboBox(self)
+        self.interface_combobox.addItems(interface_names)
+        layout.addWidget(self.interface_combobox)
 
-    port_frame = tk.Frame(root)
-    port_frame.pack(pady=10)
+        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel, self)
+        button_box.accepted.connect(self.accept)
+        button_box.rejected.connect(self.reject)
+        layout.addWidget(button_box)
 
-    tk.Label(button_frame, text="端口号:",).pack(side=tk.LEFT, padx=10)
-    global port_entry
-    port_entry = tk.Entry(button_frame)
-    port_entry.insert(0, str(config.PORT))
-    port_entry.pack(side=tk.LEFT, padx=10)
+        self.setLayout(layout)
 
-    tk.Button(button_frame, text="选择共享文件夹", command=tool.select_shared_folder).pack(side=tk.LEFT, padx=10)
-    tk.Button(button_frame, text="选择上传文件夹", command=tool.select_target_folder).pack(side=tk.LEFT, padx=10)
-    tk.Button(button_frame, text="启动服务器", command=lambda: tool.start_server(port_entry)).pack(side=tk.LEFT, padx=10)
-    tk.Button(button_frame, text="停止服务器", command=lambda: on_closing(root)).pack(side=tk.LEFT, padx=10)
+        self.selected_interface = None
 
-    global log_text
-    log_text = tk.Text(root, height=30, width=90)
-    log_text.pack(pady=10)
-    log_text.insert(tk.END, "日志信息：\n")
+    def accept(self):
+        selected_interface = self.interface_combobox.currentText()
+        tool.on_interface_select(selected_interface)
+        self.selected_interface = selected_interface
+        super().accept()
 
-    mode_button = tk.Button(root, text="切换到浅色模式", command=lambda: toggle_mode(root,button_frame,log_text,mode_button,interface_frame))
-    mode_button.pack(pady=10)
+    def reject(self):
+        super().reject()
 
-    apply_dark_mode(root, button_frame,log_text,mode_button,interface_frame)
-
-    log_text.tag_configure("info", foreground="orange")
-    log_text.tag_configure("info1", foreground="green")  # GET /files 请求，绿色
-    log_text.tag_configure("great", foreground="pink")  # 200 状态码，紫色
-    log_text.tag_configure("error", foreground="red")  # 404 错误，红色
-    log_text.tag_configure("info2", foreground="purple")  # POST 请求，粉色
-
-def on_closing(root):
-    if flask_thread is not None and flask_thread.is_alive():
-        file_utils.update_display("关闭服务器")
-
-        threading.Thread(target=tool.stop_flask_server, daemon=True).start()
-        root.quit()
-
-        # 关闭防火墙端口
-        #file_utils.close_firewall_port()
-    else:
-        file_utils.update_display("没有启动服务器，直接退出程序")
-        root.quit()
+    def show_no_interfaces_message(self):
+        msg = QMessageBox(self)
+        msg.setIcon(QMessageBox.Warning)
+        msg.setWindowTitle("错误")
+        msg.setText("没有找到可用的网络接口。")
+        msg.setStandardButtons(QMessageBox.Ok)
+        msg.exec()
+        self.close()
