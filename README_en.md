@@ -12,6 +12,7 @@
     - [Run a program](#run-a-program)
       - [Method 1](#method-1)
       - [Method 2](#method-2)
+      - [Method 3](#method-3)
     - [Usage](#usage)
       - [Create certificate (using self signed certificate)](#create-certificate-using-self-signed-certificate)
       - [Add a certificate to the program execution directory](#add-a-certificate-to-the-program-execution-directory)
@@ -48,6 +49,8 @@ FFTUSR
 │   ├── /icon
 │   │   ├── icon.jpg
 │   │   └── config.json
+│   ├── /fonts
+│   │   └── SourceHanSansTC-Light.ttf
 │   ├── __init__.py 
 │   ├── config.py
 │   ├── file_utils.py
@@ -91,6 +94,12 @@ FFTUSR
 
 ![Screenshot 1](./Pictures/7.png "可选标题")
 
+>The program font uses SourceHanSansTC Light.ttf, and users can choose to package with other fonts according to their preferences
+>
+>Simply place the file in the/fonts folder and modify the font path in config.py by yourself
+>
+[Click to download this program using the original font address](https://github.com/adobe-fonts/source-han-serif)
+
 ## Installation and operation mode
 
 ### Install Python library
@@ -128,6 +137,21 @@ PyInstaller -F --add-data "icon/*;icon" -i file-transfer\icon\icon.jpg main.py
 
 ```bash
 python main.py
+```
+
+#### Method 3
+
+>Windows users can directly download the exe file from the releases and run it directly
+>
+>Linux users download binary files from releases and run them directly (with graphical interface)
+>
+>In Linux non graphical interfaces, graphical interface libraries such as X11 can be installed and run (for SSH remote)
+>
+>The operation method is as follows:
+
+```bash
+sudo apt-get update
+sudo apt-get install libgl1 libegl1 libxcb-icccm4 libxcb-cursor0 libxcb-keysyms1 libxcb-shape0 libxkbcommon-x11-0
 ```
 
 ### Usage

@@ -146,9 +146,13 @@ class MainWindow(QMainWindow):
         QMessageBox.about(
             self,
             "关于",
-            "本程序为之前版本的移植版\n\n"
-            "支持老版本所有功能(自定义选择文件夹，自定义端口，自定义网络接口等)\n\n"
-            "版本：v1.1\n\n"
+            "本程序是一个基于Flask的文件传输工具,支持功能如下：\n\n"
+            "1.支持自定义上传和共享文件夹(默认共享目录为D: 默认上传目录为C:)\n"
+            "2.自动检测网口ip (可自定义选择启动程序的ip)\n"
+            "3.可自定义端口号 (默认端口为12345)\n"
+            "4.根据程序运行目录自动切换http或HTTPS协议(使用HTTPS需提供证书文件,默认使用HTTP)\n"
+            "5.支持Windows和Linux系统\n"
+            "版本：v1.2\n\n"
             )
 
 class InterfaceSelectorDialog(QDialog):

@@ -11,6 +11,7 @@
     - [运行程序](#运行程序)
       - [方法一](#方法一)
         - [方法二](#方法二)
+          - [方法三](#方法三)
     - [用法](#用法)
       - [创建证书 (使用自签名证书)](#创建证书-使用自签名证书)
       - [在程序执行目录添加证书](#在程序执行目录添加证书)
@@ -47,6 +48,8 @@ FFTUSR
 │   ├── /icon
 │   │   ├── icon.jpg
 │   │   └── config.json
+│   ├── /fonts
+│   │   └── SourceHanSansTC-Light.ttf
 │   ├── __init__.py 
 │   ├── config.py
 │   ├── file_utils.py
@@ -90,6 +93,12 @@ FFTUSR
 
 ![Screenshot 1](./Pictures/7.png "可选标题")
 
+>程序字体使用SourceHanSansTC-Light.ttf，用户可以根据自己的喜好选择使用其他字体打包
+>
+>将文件放在/fonts文件夹下并自行修改config.py中的字体路径即可
+>
+[点击下载本程序使用字体原地址](https://github.com/adobe-fonts/source-han-serif)
+
 ## 安装和运行方式
 
 ### 安装python库
@@ -127,6 +136,21 @@ PyInstaller -F --add-data "icon/*;icon" -i file-transfer\icon\icon.jpg main.py
 
 ```bash
 python main.py
+```
+
+#### 方法三
+
+>windows用户可以直接下载releases中的exe文件直接运行
+>
+>Linux用户下载releases中的二进制文件直接运行(带图形界面)
+>
+>在linux非图形化界面中可安装x11等图形化界面库后运行(针对SSH远程来说)
+>
+>操作方式如下：
+
+```bash
+sudo apt-get update
+sudo apt-get install libgl1 libegl1 libxcb-icccm4 libxcb-cursor0 libxcb-keysyms1 libxcb-shape0 libxkbcommon-x11-0
 ```
 
 ### 用法

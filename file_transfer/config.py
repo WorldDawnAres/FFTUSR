@@ -62,6 +62,8 @@ image = get_resource_path(image_path)
 config_path = os.path.join("icon", "config.json")
 CONFIG_PATH = get_resource_path(config_path)
 
+FONTS_PATH = get_resource_path("fonts/SourceHanSansTC-Light.ttf")
+
 # CONFIG_PATH = "D:/VSCode/environmental/project/FFTUSR/file_transfer/icon/config.json"
 # image="D:/VSCode/environmental/project/FFTUSR/file_transfer/icon/icon.ico"
 
