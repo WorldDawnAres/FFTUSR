@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件传输</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 📤 文件上传 -->
+        <div class="upload-form">
+            <h2>上传文件</h2>
+            <form id="upload-form" method="post" action="/upload" enctype="multipart/form-data">
+                <input type="file" id="file-input" name="file" required>
+                <label for="target_folder">选择目标文件夹：</label>
+                <select id="target_folder" name="target_folder">
+                    <option value="">默认上传目录</option>
+                    {% for folder in subfolders %}
+                        <option value="{{ folder }}">{{ folder }}</option>
+                    {% endfor %}
+                </select>
+                <input type="submit" value="上传">
+            </form>
+            <div id="progress-container">
+                <div id="progress-bar">0%</div>
+            </div>
+        </div>
+
+        <!-- 📂 文件列表 -->
+        <div class="file-list">
+            <h1>文件列表</h1>
+            <p>当前路径: /{{ current_path }}</p>
+            <ul>
+                {% for item in items %}
+                    <li>
+                        {% if item.is_dir %}
+                            <a href="/files/{{ item.path }}">{{ item.name }}/</a>
+                        {% else %}
+                            <a href="/download/{{ item.path }}" target="_blank">{{ item.name }}</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <script src="../js/script.js"></script>
+</body>
+</html>

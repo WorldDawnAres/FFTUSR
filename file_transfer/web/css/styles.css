@@ -1,0 +1,113 @@
+body { 
+    font-family: Arial, sans-serif; 
+    padding: 20px; 
+}
+
+/* 🌟 默认左右排列：PC端 */
+.container { 
+    display: flex; 
+    gap: 20px; 
+}
+
+.file-list, .upload-form { 
+    flex: 1; 
+    padding: 20px; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    border-radius: 5px; 
+}
+
+h1, h2 { 
+    color: #333; 
+}
+
+ul { 
+    list-style-type: none; 
+    padding: 0; 
+}
+
+li { 
+    margin: 10px 0; 
+}
+
+a { 
+    text-decoration: none; 
+    color: #007BFF; 
+}
+
+a:hover { 
+    text-decoration: underline; 
+}
+
+/* 上传部分的样式 */
+input[type="file"], select, input[type="submit"] { 
+    margin: 15px 0;
+    font-size: 14px; 
+    color: #333; 
+    border: 1px solid #ccc; 
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    padding: 12px;
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+}
+
+input[type="file"] {
+    padding: 12px;
+}
+
+input[type="submit"]:hover {
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+
+input[type="file"]:focus, select:focus, input[type="submit"]:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(0, 200, 0, 0.5);
+}
+
+/* 上传进度条样式 */
+#progress-container { 
+    margin-top: 10px; 
+    width: 100%; 
+    background: #ddd; 
+    border-radius: 5px; 
+}
+
+#progress-bar { 
+    height: 20px; 
+    width: 0%; 
+    background: #4CAF50; 
+    border-radius: 5px; 
+    text-align: center; 
+    color: white; 
+    line-height: 20px; 
+}
+
+/* 📱 手机端自动切换为上下结构 */
+@media screen and (max-width: 768px) {
+    .container { 
+        flex-direction: column; 
+    }
+}
+
+/* 🌟 PC端：上传部分垂直排列 */
+@media screen and (min-width: 768px) {
+    .upload-form {
+        display: block;
+        width: 100%;
+    }
+    
+    .upload-form input[type="file"],
+    .upload-form select,
+    .upload-form input[type="submit"] {
+        width: 100%;
+    }
+
+    .upload-form label {
+        display: block;
+        margin-bottom: 5px;
+    }
+}

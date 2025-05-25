@@ -1,8 +1,8 @@
 from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QFont, QFontDatabase
 import sys
-from file_transfer.ui import MainWindow
-from file_transfer.config import FONTS_PATH
+from file_transfer.tools.ui import MainWindow
+from file_transfer.tools.config import FONTS_PATH
 
 def main():
     app = QApplication(sys.argv)

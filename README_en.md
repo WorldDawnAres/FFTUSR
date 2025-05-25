@@ -51,14 +51,22 @@ FFTUSR
 │   │   └── config.json
 │   ├── /fonts
 │   │   └── SourceHanSansTC-Light.ttf
-│   ├── __init__.py 
-│   ├── config.py
-│   ├── file_utils.py
-│   ├── html.py
-│   ├── main.py
-│   ├── ui.py
-│   ├── tool.py
-│   └── server.py
+│   ├── /web
+│   │   └── /html
+│   │   │   └── index.html
+│   │   └── /css
+│   │   │   └── style.css
+│   │   └── /js
+│   │   │   └── script.js
+│   ├── /tools
+│   │   ├── __init__.py 
+│   │   ├── config.py
+│   │   ├── file_utils.py
+│   │   ├── html.py
+│   │   ├── ui.py
+│   │   ├── tool.py
+│   │   └── server.py
+│   └── main.py
 └── /README.md
 ```
 

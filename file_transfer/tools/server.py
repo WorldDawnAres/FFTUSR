@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, render_template_string, request, send_from_directory
-from file_transfer import config,html
+from file_transfer.tools import config
 import os
 
 def get_target_subfolders(target_folder_path):
@@ -22,7 +22,9 @@ def get_items(folder_path):
             #print(f"Item added: {relative_path}")
     return items
 
-app = Flask(__name__)
+app = Flask(__name__,
+    static_folder=config.get_resource_path('web'),
+    static_url_path='')
 @app.route('/files')
 @app.route('/files/<path:path>')
 def list_files(path=""):
@@ -35,7 +37,7 @@ def list_files(path=""):
         subfolders = get_target_subfolders(target_folder_path)
         items = get_items(os.path.join(shared_folder_path, path))
 
-        return render_template_string(html.FILE_LIST_HTML, items=items, subfolders=subfolders, current_path=path)
+        return render_template_string(config.FILE_LIST_HTML, items=items, subfolders=subfolders, current_path=path)
     except Exception as e:
         return f"获取文件列表时出错: {str(e)}", 500
 
