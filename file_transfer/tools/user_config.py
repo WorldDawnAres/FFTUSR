@@ -13,6 +13,10 @@ class UiConfigManager:
         self.config = self.config_manager.config
 
     @classmethod
+    def set_max_sessions(cls, max_sessions):
+        cls.max_sessions = max_sessions
+    
+    @classmethod
     def add_active_session(cls, username, session_id):
         cls._active_sessions[session_id] = {
             'username': username,
@@ -63,7 +67,7 @@ class UiConfigManager:
 
     @classmethod
     def get_user_session(cls, username):
-        for session in cls._active_sessions.values():
+        for session_id, session in cls._active_sessions.items():
             if session['username'] == username:
-                return True
-        return False
+                return session_id, session
+        return None, None

@@ -167,6 +167,7 @@ class MainWindow(QMainWindow):
         sessions, ok = QInputDialog.getInt(self, "设置最大连接人数", "请输入最大连接人数：", self.max_sessions, 1, 1000)
         if ok:
             self.max_sessions = sessions
+            UiConfigManager.set_max_sessions(sessions)
             QMessageBox.information(self, "设置成功", f"最大连接人数已设置为：{self.max_sessions}")
             print(f"最大连接人数已设置为：{self.max_sessions}")
 

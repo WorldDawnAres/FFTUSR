@@ -165,6 +165,10 @@ def login():
         if UiConfigManager.get_active_sessions_count() >= UiConfigManager.max_sessions:
             return render_template_string(config.LOGIN_HTML, error="系统已达到最大登录人数限制，请稍后再试")
         
+        existing_session_id, existing_session = UiConfigManager.get_user_session(username)
+        if existing_session_id:
+            UiConfigManager.remove_active_session(existing_session_id)
+        
         if username in users and users[username] == password:
             session['logged_in'] = True
             session['username'] = username
