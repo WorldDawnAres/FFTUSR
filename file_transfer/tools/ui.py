@@ -1,11 +1,13 @@
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QMessageBox, QStyleFactory, QLabel, QComboBox,
-    QDialogButtonBox, QDialog, QVBoxLayout, QWidget, QInputDialog
+    QDialogButtonBox, QDialog, QVBoxLayout, QWidget, QInputDialog,
+    QLineEdit, QFormLayout, QHBoxLayout, QListWidget, QPushButton
 )
 from PySide6.QtGui import QIcon,QAction,QPalette, QColor
 from file_transfer.tools.LogWidget import LogWidget
 from file_transfer.tools.config import image
 from file_transfer.tools import tool
+from file_transfer.tools.user_config import UiConfigManager
 
 flask_thread = None
 
@@ -20,6 +22,7 @@ class MainWindow(QMainWindow):
 
         self.interface_frame = tool.get_local_ip()
         self.port_entry = 12345
+        self.max_sessions = 10
         self.init_ui()
         self.create_menu()
     
@@ -69,6 +72,24 @@ class MainWindow(QMainWindow):
         exit_server = QAction("停止服务器", self)
         exit_server.triggered.connect(lambda: tool.stop_flask_server())
         server_menu.addAction(exit_server)
+
+        auth_menu = menubar.addMenu("用户认证")
+        config_manager = UiConfigManager()
+        auth_enabled = config_manager.get_auth_enabled()
+
+        auth_toggle_action = QAction("启用用户认证", self)
+        auth_toggle_action.setCheckable(True)
+        auth_toggle_action.setChecked(auth_enabled)
+        auth_toggle_action.triggered.connect(self.toggle_auth)
+        auth_menu.addAction(auth_toggle_action)
+
+        manage_users_action = QAction("管理用户", self)
+        manage_users_action.triggered.connect(self.open_user_management)
+        auth_menu.addAction(manage_users_action)
+
+        max_sessions_action = QAction("设置最大连接人数", self)
+        max_sessions_action.triggered.connect(self.set_max_sessions)
+        auth_menu.addAction(max_sessions_action)
 
         theme_menu = menubar.addMenu("主题")
 
@@ -142,6 +163,78 @@ class MainWindow(QMainWindow):
         self.port_label.setText(f"当前指定端口号：{self.port_entry}")
         print(f"当前指定端口号：{self.port_entry}")
 
+    def set_max_sessions(self):
+        sessions, ok = QInputDialog.getInt(self, "设置最大连接人数", "请输入最大连接人数：", self.max_sessions, 1, 1000)
+        if ok:
+            self.max_sessions = sessions
+            QMessageBox.information(self, "设置成功", f"最大连接人数已设置为：{self.max_sessions}")
+            print(f"最大连接人数已设置为：{self.max_sessions}")
+
+    def toggle_auth(self):
+        config_manager = UiConfigManager()
+        
+        current_state = config_manager.get_auth_enabled()
+        config_manager.set_auth_enabled(not current_state)
+        
+        if not current_state and not config_manager.get_users():
+            self.open_user_management()
+
+    def open_user_management(self):
+        dialog = QDialog(self)
+        dialog.setWindowTitle("用户管理")
+        dialog.setMinimumWidth(400)
+        layout = QVBoxLayout()
+        
+        user_list = QListWidget()
+        self.update_user_list(user_list)
+        layout.addWidget(QLabel("现有用户:"))
+        layout.addWidget(user_list)
+        
+        form_layout = QFormLayout()
+        username_input = QLineEdit()
+        password_input = QLineEdit()
+        password_input.setEchoMode(QLineEdit.Password)
+        form_layout.addRow("用户名:", username_input)
+        form_layout.addRow("授权码:", password_input)
+        layout.addLayout(form_layout)
+        
+        config_manager = UiConfigManager()
+        
+        button_layout = QHBoxLayout()
+        add_button = QPushButton("添加用户")
+        remove_button = QPushButton("删除选中用户")
+        
+        def add_user():
+            username = username_input.text().strip()
+            password = password_input.text().strip()
+            if username and password:
+                config_manager.add_user(username, password)
+                username_input.clear()
+                password_input.clear()
+                self.update_user_list(user_list)
+                
+        def remove_user():
+            selected_items = user_list.selectedItems()
+            if selected_items:
+                username = selected_items[0].text()
+                config_manager.remove_user(username)
+                self.update_user_list(user_list)
+                
+        add_button.clicked.connect(add_user)
+        remove_button.clicked.connect(remove_user)
+        button_layout.addWidget(add_button)
+        button_layout.addWidget(remove_button)
+        layout.addLayout(button_layout)
+        dialog.setLayout(layout)
+        dialog.exec_()
+
+    def update_user_list(self, list_widget):
+        list_widget.clear()
+        config_manager = UiConfigManager()
+        users = config_manager.get_users()
+        for username in users:
+            list_widget.addItem(username)
+
     def show_about(self):
         QMessageBox.about(
             self,
@@ -152,7 +245,8 @@ class MainWindow(QMainWindow):
             "3.可自定义端口号 (默认端口为12345)\n"
             "4.根据程序运行目录自动切换http或HTTPS协议(使用HTTPS需提供证书文件,默认使用HTTP)\n"
             "5.支持Windows和Linux系统\n"
-            "版本：v1.2\n\n"
+            "6.支持用户认证可选功能(默认关闭),可自行增加删除用户，限制用户登录\n"
+            "版本：v1.3\n\n"
             )
 
 class InterfaceSelectorDialog(QDialog):

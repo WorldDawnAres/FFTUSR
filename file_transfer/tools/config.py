@@ -28,7 +28,7 @@ class ConfigManager:
 
     def load_config(self):
         if os.path.exists(self.config_path):
-            print(f"配置文件存在，将加载配置文件")
+            #print(f"配置文件存在，将加载配置文件")
             with open(self.config_path, "r", encoding="utf-8") as f:
                 return json.load(f)
         else:
@@ -63,16 +63,33 @@ def get_html_template():
     
     html_content = html_content.replace('../css/', '/css/')
     html_content = html_content.replace('../js/', '/js/')
+    html_content = html_content.replace('../images/', '/images/')
     
     return html_content
 
+def get_login_template():
+    login_path = get_resource_path("web/html/login.html")
+    with open(login_path, 'r', encoding='utf-8') as f:
+        login_content = f.read()
+    
+    login_content = login_content.replace('../css/', '/css/')
+    #login_content = login_content.replace('../js/', '/js/')
+    login_content = login_content.replace('../images/', '/images/')
+    
+    return login_content
+
 FILE_LIST_HTML = get_html_template()
+LOGIN_HTML = get_login_template()
 
 image_path = os.path.join("icon", "icon.ico")
 image = get_resource_path(image_path)
 
 config_path = os.path.join("icon", "config.json")
-CONFIG_PATH = get_resource_path(config_path)
+current_dir_config = os.path.join(os.getcwd(), "config.json")
+if os.path.exists(current_dir_config):
+    CONFIG_PATH = current_dir_config
+else:
+    CONFIG_PATH = get_resource_path(config_path)
 
 FONTS_PATH = get_resource_path("fonts/SourceHanSansTC-Light.ttf")
 

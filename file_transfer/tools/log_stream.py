@@ -15,7 +15,7 @@ class EmittingStream(QObject):
         if not text:
             return
         
-        if "GET /files" in text or "尝试下载文件" in text:
+        if "None" in text or "尝试下载文件" in text:
             style = "success"
         elif "文件不存在" in text or "404" in text or "下载文件时出错" in text:
             style = "error"

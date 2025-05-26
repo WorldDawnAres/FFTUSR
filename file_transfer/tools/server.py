@@ -1,6 +1,7 @@
-from flask import Flask, jsonify, render_template_string, request, send_from_directory
+import functools,os
+from flask import Flask, jsonify, redirect, render_template_string, request, send_from_directory, session, url_for
 from file_transfer.tools import config
-import os
+from file_transfer.tools.user_config import UiConfigManager
 
 def get_target_subfolders(target_folder_path):
     subfolders = []
@@ -22,11 +23,25 @@ def get_items(folder_path):
             #print(f"Item added: {relative_path}")
     return items
 
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        ui_config = UiConfigManager()
+        if not ui_config.get_auth_enabled() or session.get('logged_in'):
+            return view(**kwargs)
+        return redirect(url_for('login'))
+    return wrapped_view
+
 app = Flask(__name__,
     static_folder=config.get_resource_path('web'),
     static_url_path='')
+@app.route('/')
+def index():
+    return redirect(url_for('list_files'))
+
 @app.route('/files')
 @app.route('/files/<path:path>')
+@login_required
 def list_files(path=""):
     try:
         config.SHARED_FOLDER = config.config_manager.get_shared_folder()
@@ -107,10 +122,10 @@ def download_file(filename):
     
 @app.route('/shutdown', methods=['POST'])
 def shutdown():
-    shared_folder="D:\\"
-    target_folder="C:\\"
-    config.config_manager.update_shared_folder(shared_folder)
-    config.config_manager.update_target_folder(target_folder)
+    # shared_folder="D:\\"
+    # target_folder="C:\\"
+    # config.config_manager.update_shared_folder(shared_folder)
+    # config.config_manager.update_target_folder(target_folder)
     print("正在关闭服务器...")
     func = request.environ.get('werkzeug.server.shutdown')
     if func is None:
@@ -134,3 +149,46 @@ def log_response_info(response):
 @app.route('/refresh')
 def refresh():
     return jsonify({"message": "页面已刷新"})
+
+app.secret_key = os.urandom(24)
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    ui_config = UiConfigManager()
+    if not ui_config.get_auth_enabled():
+        return redirect(url_for('index'))
+        
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        users = ui_config.get_users()
+        
+        if UiConfigManager.get_active_sessions_count() >= UiConfigManager.max_sessions:
+            return render_template_string(config.LOGIN_HTML, error="系统已达到最大登录人数限制，请稍后再试")
+        
+        if username in users and users[username] == password:
+            session['logged_in'] = True
+            session['username'] = username
+            session_id = os.urandom(16).hex()
+            session['sid'] = session_id
+            UiConfigManager.add_active_session(username, session_id)
+            return redirect(url_for('index'))
+        else:
+            try:
+                return render_template_string(config.LOGIN_HTML, error="用户名或授权码错误")
+            except Exception as e:
+                app.logger.error(f"渲染模板错误: {str(e)}")
+                return f"模板错误: {str(e)}", 500
+    else:
+        return render_template_string(config.LOGIN_HTML)
+            
+@app.route('/logout')
+def logout():
+    if session.get('logged_in'):
+        UiConfigManager.remove_active_session(session.get('sid',''))
+    session.clear()
+    return redirect(url_for('login'))
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    app.logger.error(f"未处理的异常: {str(e)}")
+    return "服务器内部错误", 500

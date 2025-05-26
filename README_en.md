@@ -14,6 +14,7 @@
       - [Method 2](#method-2)
       - [Method 3](#method-3)
     - [Usage](#usage)
+      - [Use custom config. json file](#use-custom-config-json-file)
       - [Create certificate (using self signed certificate)](#create-certificate-using-self-signed-certificate)
       - [Add a certificate to the program execution directory](#add-a-certificate-to-the-program-execution-directory)
       - [Precautions](#precautions)
@@ -40,6 +41,7 @@
 - [x] Automatically detect network port IP (customizable IP for program startup)
 - [x] Customizable port number (default port is 12345)
 - [x] Log display function
+- [x] Optional user authentication (disabled by default, customizable username and password, limited access quantity)
 
 ## Program structure
 
@@ -53,16 +55,19 @@ FFTUSR
 │   │   └── SourceHanSansTC-Light.ttf
 │   ├── /web
 │   │   └── /html
+│   │   │   ├── login.html
 │   │   │   └── index.html
 │   │   └── /css
+│   │   │   ├── login.css
 │   │   │   └── style.css
 │   │   └── /js
 │   │   │   └── script.js
+│   │   └── /images
+│   │   │   └── favicon.ico
 │   ├── /tools
 │   │   ├── __init__.py 
 │   │   ├── config.py
 │   │   ├── file_utils.py
-│   │   ├── html.py
 │   │   ├── ui.py
 │   │   ├── tool.py
 │   │   └── server.py
@@ -107,6 +112,10 @@ FFTUSR
 >Simply place the file in the/fonts folder and modify the font path in config.py by yourself
 >
 [Click to download this program using the original font address](https://github.com/adobe-fonts/source-han-serif)
+
+>The latest version supports user authentication, where users can customize their username and password, limit the number of accesses, and disable it by default. Users can choose whether to enable it or not.
+
+![Screenshot 1](./Pictures/8.png "可选标题")
 
 ## Installation and operation mode
 
@@ -163,6 +172,34 @@ sudo apt-get install libgl1 libegl1 libxcb-icccm4 libxcb-cursor0 libxcb-keysyms1
 ```
 
 ### Usage
+
+#### Use custom config. json file
+
+>The program defaults to the use of the config. json file. Users can create a config. json file in the packaged program directory to customize the program's default settings. If not configured, the program's built-in configuration will be used and new features (user authentication username, password) will need to be reconfigured each time it starts.
+>
+>The location of the config. json file is as follows:
+
+```bash
+├── /src                  # Download the exe program and store it in a folder
+│   ├── FFTUSR.v1.0.exe   # file transfer program
+│   ├── config.json       # configuration file
+```
+
+>The following content needs to be configured in the config. json file:
+
+```json
+{
+  "shared_folder": "D:\\", #Shared folder path (customizable)
+  "target_folder": "C:\\", #Upload folder path (customizable)
+  "auth_enabled": false,   #Whether to enable user authentication (optional here, set within the program)
+  "users": {
+    "user1": "password1",  #Username and password (not set here, set within the program)
+    "user2": "password2" 
+  }
+}
+```
+
+>After saving the above content as a config. json file, the program will use the configuration in that file.
 
 #### Create certificate (using self signed certificate)
 

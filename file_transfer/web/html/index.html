@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>文件传输</title>
     <link rel="stylesheet" href="../css/styles.css">
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
 </head>
 <body>
     <div class="container">
@@ -31,6 +32,12 @@
         <div class="file-list">
             <h1>文件列表</h1>
             <p>当前路径: /{{ current_path }}</p>
+            <div class="user-controls">
+                {% if session.get('logged_in') %}
+                    <span>当前用户: {{ session.get('username') }}</span>
+                    <a href="/logout" class="logout-btn">登出</a>
+                {% endif %}
+            </div>
             <ul>
                 {% for item in items %}
                     <li>

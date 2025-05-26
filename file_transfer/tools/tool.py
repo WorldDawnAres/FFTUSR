@@ -1,4 +1,4 @@
-from file_transfer.tools import config,server
+from file_transfer.tools import config,server,user_config
 from PySide6.QtWidgets import QFileDialog
 import psutil,webbrowser,platform,subprocess,threading
 from gevent.pywsgi import WSGIServer
@@ -128,10 +128,17 @@ def start_server(port_entry):
     #打开防火墙端口
     #open_firewall_port()
 
+    config_manager = user_config.UiConfigManager()
+
     if config.cert_file is None or config.key_file is None:
-        server_url = f'http://{ip_address}:{PORT}/files'
+        protocol = 'http'
     else:
-        server_url = f'https://{ip_address}:{PORT}/files'
+        protocol = 'https'
+
+    if config_manager.get_auth_enabled():
+        server_url = f'{protocol}://{ip_address}:{PORT}/login'
+    else:
+        server_url = f'{protocol}://{ip_address}:{PORT}/files'
 
     webbrowser.open(server_url)
 

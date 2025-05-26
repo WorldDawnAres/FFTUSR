@@ -2,17 +2,19 @@
 
 **[English](README_en.md) | [简体中文](README.md)**
 
-- [下载地址](#下载地址)
-- [功能](#功能)
-- [程序结构](#程序结构)
-- [介绍](#介绍)
-- [安装和运行方式](#安装和运行方式)
-  - [安装python库](#安装python库)
+- [目录](#目录)
+  - [下载地址](#下载地址)
+  - [功能](#功能)
+  - [程序结构](#程序结构)
+  - [介绍](#介绍)
+  - [安装和运行方式](#安装和运行方式)
+    - [安装python库](#安装python库)
     - [运行程序](#运行程序)
       - [方法一](#方法一)
-        - [方法二](#方法二)
-          - [方法三](#方法三)
+      - [方法二](#方法二)
+      - [方法三](#方法三)
     - [用法](#用法)
+      - [使用自定义config.json文件](#使用自定义configjson文件)
       - [创建证书 (使用自签名证书)](#创建证书-使用自签名证书)
       - [在程序执行目录添加证书](#在程序执行目录添加证书)
       - [注意事项](#注意事项)
@@ -39,6 +41,7 @@
 - [x] 自动检测网口ip (可自定义选择启动程序的ip)
 - [x] 可自定义端口号 (默认端口为12345)
 - [x] 日志显示功能
+- [x] 用户认证功能(默认关闭，可自定义用户名和密码，限制访问数量)
 
 ## 程序结构
 
@@ -52,16 +55,19 @@ FFTUSR
 │   │   └── SourceHanSansTC-Light.ttf
 │   ├── /web
 │   │   └── /html
+│   │   │   ├── login.html
 │   │   │   └── index.html
 │   │   └── /css
+│   │   │   ├── login.css
 │   │   │   └── style.css
 │   │   └── /js
 │   │   │   └── script.js
+│   │   └── /images
+│   │   │   └── favicon.ico
 │   ├── /tools
 │   │   ├── __init__.py 
 │   │   ├── config.py
 │   │   ├── file_utils.py
-│   │   ├── html.py
 │   │   ├── ui.py
 │   │   ├── tool.py
 │   │   └── server.py
@@ -106,6 +112,10 @@ FFTUSR
 >将文件放在/fonts文件夹下并自行修改config.py中的字体路径即可
 >
 [点击下载本程序使用字体原地址](https://github.com/adobe-fonts/source-han-serif)
+
+>最新版本支持用户认证，用户可以自定义用户名和密码，限制访问数量，默认关闭，用户可以自行选择是否开启。
+
+![Screenshot 1](./Pictures/8.png "可选标题")
 
 ## 安装和运行方式
 
@@ -162,6 +172,34 @@ sudo apt-get install libgl1 libegl1 libxcb-icccm4 libxcb-cursor0 libxcb-keysyms1
 ```
 
 ### 用法
+
+#### 使用自定义config.json文件
+
+>程序默认使用config.json文件，用户可以在打包程序目录创建config.json文件来自定义程序默认设置，若不进行配置则使用程序内置配置且每次启动都需要重新配置新功能(用户认证的用户名，密码)。
+>
+>config.json文件位置如下：
+
+```bash
+├── /src                  # 下载exe程序后存放文件夹
+│   ├── FFTUSR.v1.1.exe   # 文件传输程序
+│   ├── config.json       # 配置文件
+```
+
+>需要在config.json文件内配置内容如下：
+
+```json
+{
+  "shared_folder": "D:\\", #共享文件夹路径(可自定义设置)
+  "target_folder": "C:\\", #上传文件夹路径(可自定义设置)
+  "auth_enabled": false,   #是否开启用户认证(此处可不设置，在程序内设置)
+  "users": {
+    "user1": "password1",  #用户名和密码(此处可不设置，在程序内设置)
+    "user2": "password2" 
+  }
+}
+```
+
+>将上述内容保存为config.json文件后，程序将使用该文件中的配置。
 
 #### 创建证书 (使用自签名证书)
 
