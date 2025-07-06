@@ -189,3 +189,61 @@ def run_flask_server(ip_address):
         print(f"访问 https://{ip_address}:{PORT}/files 查看文件列表")
         flask_server_process = WSGIServer((ip_address, PORT), server.app, keyfile=config.key_file, certfile=config.cert_file)
     flask_server_process.serve_forever()
+
+def generate_qr_code(ip_address, port):
+    try:
+        import qrcode
+        from io import BytesIO
+        from PySide6.QtGui import QPixmap
+        
+        if config.cert_file is None or config.key_file is None:
+            protocol = 'http'
+        else:
+            protocol = 'https'
+        
+        config_manager = user_config.UiConfigManager()
+        if config_manager.get_auth_enabled():
+            server_url = f'{protocol}://{ip_address}:{port}/login'
+        else:
+            server_url = f'{protocol}://{ip_address}:{port}/files'
+        
+        print(f"生成二维码URL: {server_url}")
+        
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=8,
+            border=4,
+        )
+        qr.add_data(server_url)
+        qr.make(fit=True)
+        
+        qr_img = qr.make_image(fill_color="black", back_color="white")
+        
+        buffer = BytesIO()
+        qr_img.save(buffer, format='PNG')
+        buffer.seek(0)
+        
+        pixmap = QPixmap()
+        pixmap.loadFromData(buffer.getvalue())
+        
+        return pixmap, server_url
+        
+    except ImportError:
+        print("错误: 缺少qrcode库，请运行 'pip install qrcode[pil]' 安装")
+        return None, None
+    except Exception as e:
+        print(f"生成二维码时出错: {e}")
+        return None, None
+
+def get_server_url(ip_address, port):
+    if config.cert_file is None or config.key_file is None:
+        protocol = 'http'
+    else:
+        protocol = 'https'
+    
+    config_manager = user_config.UiConfigManager()
+    if config_manager.get_auth_enabled():
+        return f'{protocol}://{ip_address}:{port}/login'
+    else:
+        return f'{protocol}://{ip_address}:{port}/files'

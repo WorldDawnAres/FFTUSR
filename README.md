@@ -42,6 +42,7 @@
 - [x] 可自定义端口号 (默认端口为12345)
 - [x] 日志显示功能
 - [x] 用户认证功能(默认关闭，可自定义用户名和密码，限制访问数量)
+- [x] 二维码访问功能
 
 ## 程序结构
 
@@ -67,7 +68,10 @@ FFTUSR
 │   ├── /tools
 │   │   ├── __init__.py 
 │   │   ├── config.py
-│   │   ├── file_utils.py
+│   │   ├── log_stream.py
+│   │   ├── LogWidget.py
+│   │   ├── QRCodeWindow.py
+│   │   ├── user_config.py
 │   │   ├── ui.py
 │   │   ├── tool.py
 │   │   └── server.py
@@ -121,14 +125,20 @@ FFTUSR
 
 ### 安装python库
 
->使用以下命令安装所需的Python库:
+>使用以下命令安装所需的Python库(V1.1-V1.3版本):
 
 ```bash
 pip install gevent psutil flask PySide6
 pip install PyInstaller(可选)
 ```
 
->旧版不需要PySide6库，但需安装pillow库。
+>V1.4版本新增功能需要在之前版本基础上安装额外的Python库:
+
+```bash
+pip install qrcode[pil]
+```
+
+>旧版不需要PySide6库，但需安装pillow库(V1.0之前版本)。
 
 ```bash
 pip install gevent psutil flask pillow

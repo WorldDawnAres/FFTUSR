@@ -42,6 +42,7 @@
 - [x] Customizable port number (default port is 12345)
 - [x] Log display function
 - [x] Optional user authentication (disabled by default, customizable username and password, limited access quantity)
+- [x] QR code access function
 
 ## Program structure
 
@@ -67,7 +68,10 @@ FFTUSR
 │   ├── /tools
 │   │   ├── __init__.py 
 │   │   ├── config.py
-│   │   ├── file_utils.py
+│   │   ├── log_stream.py
+│   │   ├── LogWidget.py
+│   │   ├── QRCodeWindow.py
+│   │   ├── user_config.py
 │   │   ├── ui.py
 │   │   ├── tool.py
 │   │   └── server.py
@@ -121,14 +125,20 @@ FFTUSR
 
 ### Install Python library
 
->Use the following command to install the required Python libraries:
+>Use the following command to install the required Python libraries(V1.1-V1.3 versions):
 
 ```bash
 pip install gevent psutil flask pillow
 pip install PyInstaller(optional)
 ```
 
->The old version does not require the PySide6 library, but requires the installation of the Pillow library.
+>The newly added features in V1.4 require the installation of additional Python libraries on top of the previous version:
+
+```bash
+pip install qrcode[pil]
+```
+
+>The old version does not require the PySide6 library, but requires the installation of the Pillow library.(Version before V1.0)
 
 ```bash
 pip install gevent psutil flask pillow

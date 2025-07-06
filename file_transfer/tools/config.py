@@ -8,15 +8,21 @@ def get_resource_path(relative_path):
 def find_cert_and_key():
     running_directory = os.path.dirname(sys.executable) if hasattr(sys, 'executable') else os.path.abspath('.')
     
+    cert_extensions = ['.crt', '.cert', '.cer', '.pem', '.der']
+    
+    key_extensions = ['.key', '.pem', '.pk8', '.p8']
+    
     cert1 = None
     key1 = None
     
     for file_name in os.listdir(running_directory):
         file_path = os.path.join(running_directory, file_name)
+        file_lower = file_name.lower()
         
-        if file_name.endswith('.crt'):
+        if any(file_lower.endswith(ext) for ext in cert_extensions):
             cert1 = file_path
-        elif file_name.endswith('.key'):
+
+        elif any(file_lower.endswith(ext) for ext in key_extensions):
             key1 = file_path
     
     return cert1, key1

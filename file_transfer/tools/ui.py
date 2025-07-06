@@ -8,6 +8,7 @@ from file_transfer.tools.LogWidget import LogWidget
 from file_transfer.tools.config import image
 from file_transfer.tools import tool
 from file_transfer.tools.user_config import UiConfigManager
+from file_transfer.tools.QRCodeWindow import QRCodeWindow
 
 flask_thread = None
 
@@ -90,6 +91,12 @@ class MainWindow(QMainWindow):
         max_sessions_action = QAction("设置最大连接人数", self)
         max_sessions_action.triggered.connect(self.set_max_sessions)
         auth_menu.addAction(max_sessions_action)
+
+        qr_menu = menubar.addMenu("二维码")
+
+        generate_qr_action = QAction("显示访问二维码", self)
+        generate_qr_action.triggered.connect(self.show_qr_window)
+        qr_menu.addAction(generate_qr_action)
 
         theme_menu = menubar.addMenu("主题")
 
@@ -236,6 +243,21 @@ class MainWindow(QMainWindow):
         for username in users:
             list_widget.addItem(username)
 
+    def show_qr_window(self):
+        try:
+            interface_text = self.interface_frame.text()
+            if "：" in interface_text:
+                ip_address = interface_text.split("：")[1].strip()
+            else:
+                ip_address = tool.get_local_ip()
+            
+            qr_window = QRCodeWindow(self, ip_address, self.port_entry)
+            qr_window.show()
+            
+        except Exception as e:
+            print(f"显示二维码窗口时出错: {e}")
+            QMessageBox.warning(self, "错误", f"显示二维码窗口时出错: {str(e)}")
+
     def show_about(self):
         QMessageBox.about(
             self,
@@ -247,7 +269,8 @@ class MainWindow(QMainWindow):
             "4.根据程序运行目录自动切换http或HTTPS协议(使用HTTPS需提供证书文件,默认使用HTTP)\n"
             "5.支持Windows和Linux系统\n"
             "6.支持用户认证可选功能(默认关闭),可自行增加删除用户，限制用户登录\n"
-            "版本：v1.3\n\n"
+            "7.支持用户使用二维码访问地址\n"
+            "版本：v1.4\n\n"
             )
 
 class InterfaceSelectorDialog(QDialog):
