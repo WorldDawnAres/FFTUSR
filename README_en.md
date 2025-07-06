@@ -22,6 +22,7 @@
 ## Download link
 
 [Click here to download](https://github.com/WorldDawnAres/FFTUSR/releases)
+[Click here to access support for Win7 version](https://gitee.com/dawnlighta/fftusr)
 
 >Windows users can choose between the new or old version according to their preferences, while Linux users are advised to use the new version of the program
 >

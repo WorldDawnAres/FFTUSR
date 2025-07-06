@@ -22,6 +22,7 @@
 ## 下载地址
 
 [点击此处进行下载](https://github.com/WorldDawnAres/FFTUSR/releases)
+[点击此处访问支持win7版本](https://gitee.com/dawnlighta/fftusr)
 
 >windows用户可根据喜好选择新版或旧版使用,Linux用户请使用新版程序
 >
