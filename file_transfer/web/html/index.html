@@ -12,8 +12,11 @@
         <!-- 📤 文件上传 -->
         <div class="upload-form">
             <h2>上传文件</h2>
+            <div id="drop-zone">
+                <span id="drop-zone-text">点击此处选择文件或文件夹上传，或直接拖拽文件上传</span>
+                <input type="file" id="file-input" multiple webkitdirectory style="display: none;">
+            </div>
             <form id="upload-form" method="post" action="/upload" enctype="multipart/form-data">
-                <input type="file" id="file-input" name="file" required>
                 <label for="target_folder">选择目标文件夹：</label>
                 <select id="target_folder" name="target_folder">
                     <option value="">默认上传目录</option>

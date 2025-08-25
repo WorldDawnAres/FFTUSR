@@ -1,18 +1,164 @@
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('upload-form').addEventListener('submit', function(event) {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const uploadForm = document.getElementById('upload-form');
+    let selectedFiles = [];
+
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('drag-over');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        
+        const items = e.dataTransfer.items;
+        handleFileSelection(items);
+    });
+
+    dropZone.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        handleFileSelection(e.target.files);
+    });
+
+    uploadForm.addEventListener('submit', function(event) {
         event.preventDefault();
-        let fileInput = document.getElementById('file-input');
-        let targetFolder = document.getElementById('target_folder').value;
-        let formData = new FormData();
-        formData.append('file', fileInput.files[0]);
+        if (selectedFiles.length === 0) {
+            alert('请先选择文件或文件夹');
+            return;
+        }
+        const targetFolder = document.getElementById('target_folder').value;
+        uploadFiles(selectedFiles, targetFolder);
+    });
+
+    async function handleFileSelection(input) {
+        selectedFiles = [];
+        const fileListContainer = document.createElement('div');
+        fileListContainer.className = 'file-list-container';
+        fileListContainer.style.width = '100%';
+        fileListContainer.style.maxHeight = '300px';
+        fileListContainer.style.overflowY = 'auto';
+        document.getElementById('drop-zone-text').style.display = 'none';
+
+        const ul = document.createElement('ul');
+        ul.className = 'file-list';
+
+        async function traverseFileTree(item, path) {
+            path = path || "";
+            if (item.isFile) {
+                return new Promise((resolve) => {
+                    item.file((file) => {
+                        file.webkitRelativePath = path + file.name;
+                        selectedFiles.push(file);
+                        resolve();
+                    });
+                });
+            } else if (item.isDirectory) {
+                const dirReader = item.createReader();
+                return new Promise((resolve) => {
+                    dirReader.readEntries(async (entries) => {
+                        for (let i = 0; i < entries.length; i++) {
+                            await traverseFileTree(entries[i], path + item.name + "/");
+                        }
+                        resolve();
+                    });
+                });
+            }
+        }
+
+        if (input instanceof FileList) {
+            for (let i = 0; i < input.length; i++) {
+                selectedFiles.push(input[i]);
+            }
+        } else if (input instanceof DataTransferItemList) {
+            for (let i = 0; i < input.length; i++) {
+                const item = input[i].webkitGetAsEntry();
+                if (item) {
+                    if (item.isDirectory) {
+                        await traverseFileTree(item, "");
+                    } else {
+                        await traverseFileTree(item);
+                    }
+                }
+            }
+        }
+
+        selectedFiles.forEach(file => {
+            const li = document.createElement('li');
+            li.className = 'file-item';
+            li.textContent = file.webkitRelativePath ? 
+                file.webkitRelativePath : file.name;
+            const removeButton = document.createElement('span');
+            removeButton.textContent = ' x';
+            removeButton.className = 'remove-file';
+            removeButton.onclick = (function(fileToRemove, listItem) {
+                return function(event) {
+                    event.stopPropagation();
+                    selectedFiles = selectedFiles.filter(f => f !== fileToRemove);
+                    listItem.remove();
+                    if (selectedFiles.length === 0) {
+                        document.getElementById('drop-zone-text').style.display = 'block';
+                        const existingListContainer = dropZone.querySelector('.file-list-container');
+                        if (existingListContainer) {
+                            existingListContainer.remove();
+                        }
+                    }
+                };
+            })(file, li);
+            li.appendChild(removeButton);
+            ul.appendChild(li);
+        });
+        
+        fileListContainer.appendChild(ul);
+
+        const existingListContainer = dropZone.querySelector('.file-list-container');
+        if (existingListContainer) {
+            existingListContainer.remove();
+        }
+        dropZone.appendChild(fileListContainer);
+
+        fileInput.value = '';
+
+        if (selectedFiles.length === 0) {
+            document.getElementById('drop-zone-text').style.display = 'block';
+            if (fileListContainer) {
+                fileListContainer.remove();
+            }
+        }
+    }
+
+    function uploadFiles(files, targetFolder) {
+        const formData = new FormData();
+        let isFolderUpload = false;
+        
+        if (files.length > 0 && files[0].webkitRelativePath) {
+            isFolderUpload = files[0].webkitRelativePath.includes('/');
+        }
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            formData.append('files', file);
+            if (isFolderUpload) {
+                formData.append('relative_paths', file.webkitRelativePath);
+            }
+        }
+
         formData.append('target_folder', targetFolder);
 
-        let xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
         xhr.open('POST', '/upload', true);
 
         xhr.upload.onprogress = function(event) {
             if (event.lengthComputable) {
-                let percent = Math.round((event.loaded / event.total) * 100);
+                const percent = Math.round((event.loaded / event.total) * 100);
                 document.getElementById('progress-bar').style.width = percent + '%';
                 document.getElementById('progress-bar').textContent = percent + '%';
             }
@@ -20,7 +166,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         xhr.onload = function() {
             if (xhr.status === 200) {
-                alert('上传成功');
+                const response = JSON.parse(xhr.responseText);
+                alert(response.message);
                 document.getElementById('progress-bar').style.width = '0%';
                 document.getElementById('progress-bar').textContent = '0%';
                 window.location.reload();
@@ -30,5 +177,5 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         xhr.send(formData);
-    });
+    }
 });

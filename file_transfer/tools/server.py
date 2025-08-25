@@ -81,11 +81,11 @@ def list_files_json(path=""):
 @app.route('/upload', methods=['POST'])
 def upload_file():
     try:
-        if 'file' not in request.files:
+        if 'files' not in request.files:
             return jsonify({"error": "没有文件被上传"}), 400
 
-        file = request.files['file']
-        if file.filename == '':
+        files = request.files.getlist('files')
+        if not files or all(file.filename == '' for file in files):
             return jsonify({"error": "没有选择文件"}), 400
 
         if not config.TARGET_FOLDER:
@@ -95,15 +95,34 @@ def upload_file():
         target_folder_path = os.path.join(config.TARGET_FOLDER, target_folder_name)
         os.makedirs(target_folder_path, exist_ok=True)
 
-        save_path = os.path.join(target_folder_path, file.filename)
-        with open(save_path, 'wb') as f:
-            while True:
-                chunk = file.stream.read(1024 * 1024)  # 1MB
-                if not chunk:
-                    break
-                f.write(chunk)
+        uploaded_files = []
+        for file in files:
+            if file.filename:
+                relative_paths = request.form.getlist('relative_paths')
+                relative_path = None
+                if len(relative_paths) > uploaded_files.__len__():
+                    relative_path = relative_paths[uploaded_files.__len__()]
 
-        return jsonify({"success": True, "message": "上传成功"})
+                if relative_path and '/' in relative_path:
+                    full_path = os.path.join(target_folder_path, relative_path)
+                    os.makedirs(os.path.dirname(full_path), exist_ok=True)
+                else:
+                    full_path = os.path.join(target_folder_path, file.filename)
+                
+                with open(full_path, 'wb') as f:
+                    while True:
+                        chunk = file.stream.read(1024 * 1024)  # 1MB
+                        if not chunk:
+                            break
+                        f.write(chunk)
+                
+                uploaded_files.append(relative_path if relative_path else file.filename)
+
+        return jsonify({
+            "success": True, 
+            "message": f"成功上传 {len(uploaded_files)} 个文件",
+            "files": uploaded_files
+        })
     except Exception as e:
         return jsonify({"error": f"上传文件时出错: {str(e)}"}), 500
 
