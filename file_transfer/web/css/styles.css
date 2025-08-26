@@ -48,7 +48,7 @@ input[type="file"], select, input[type="submit"] {
     background-color: #f9f9f9;
     padding: 12px;
     width: 100%;
-    max-width: 400px;
+    max-width: 600px;
     box-sizing: border-box;
 }
 
@@ -66,6 +66,22 @@ input[type="file"]:focus, select:focus, input[type="submit"]:focus {
     outline: none;
     border-color: #4CAF50;
     box-shadow: 0 0 5px rgba(0, 200, 0, 0.5);
+}
+
+#cancel-all-btn {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+#cancel-all-btn:hover {
+    background-color: #ff4d4d;
+    color: #fff;
+    border-color: #ff0000;
 }
 
 /* 上传进度条样式 */
@@ -136,7 +152,8 @@ input[type="file"]:focus, select:focus, input[type="submit"]:focus {
     list-style: none;
     padding: 0;
     margin: 0;
-    width: 100%;
+    width: 95%;
+    padding-left: 20px; 
 }
 
 .file-item {
@@ -144,6 +161,7 @@ input[type="file"]:focus, select:focus, input[type="submit"]:focus {
     border: 1px solid #ddd;
     padding: 8px 15px;
     margin-bottom: 5px;
+    margin-left: -20px;
     border-radius: 5px;
     display: flex;
     justify-content: space-between;

@@ -2,7 +2,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const dropZone = document.getElementById('drop-zone');
     const fileInput = document.getElementById('file-input');
     const uploadForm = document.getElementById('upload-form');
+    const progressBar = document.getElementById('progress-bar');
+    const clearBtn = document.getElementById('cancel-all-btn');
     let selectedFiles = [];
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function () {
+            selectedFiles = [];
+            fileInput.value = '';
+
+            const existingListContainer = dropZone.querySelector('.file-list-container');
+            if (existingListContainer) {
+                existingListContainer.remove();
+            }
+
+            document.getElementById('drop-zone-text').style.display = 'block';
+
+            progressBar.style.width = '0%';
+            progressBar.textContent = '0%';
+        });
+    }
 
     dropZone.addEventListener('dragover', (e) => {
         e.preventDefault();
@@ -16,9 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     dropZone.addEventListener('drop', (e) => {
         e.preventDefault();
         dropZone.classList.remove('drag-over');
-        
-        const items = e.dataTransfer.items;
-        handleFileSelection(items);
+        handleFileSelection(e.dataTransfer.items);
     });
 
     dropZone.addEventListener('click', () => {
@@ -29,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
         handleFileSelection(e.target.files);
     });
 
-    uploadForm.addEventListener('submit', function(event) {
+    uploadForm.addEventListener('submit', function (event) {
         event.preventDefault();
         if (selectedFiles.length === 0) {
             alert('请先选择文件或文件夹');
@@ -94,29 +111,28 @@ document.addEventListener('DOMContentLoaded', function() {
         selectedFiles.forEach(file => {
             const li = document.createElement('li');
             li.className = 'file-item';
-            li.textContent = file.webkitRelativePath ? 
-                file.webkitRelativePath : file.name;
+            li.textContent = file.webkitRelativePath ? file.webkitRelativePath : file.name;
+
             const removeButton = document.createElement('span');
             removeButton.textContent = ' x';
             removeButton.className = 'remove-file';
-            removeButton.onclick = (function(fileToRemove, listItem) {
-                return function(event) {
-                    event.stopPropagation();
-                    selectedFiles = selectedFiles.filter(f => f !== fileToRemove);
-                    listItem.remove();
-                    if (selectedFiles.length === 0) {
-                        document.getElementById('drop-zone-text').style.display = 'block';
-                        const existingListContainer = dropZone.querySelector('.file-list-container');
-                        if (existingListContainer) {
-                            existingListContainer.remove();
-                        }
+            removeButton.onclick = function (event) {
+                event.stopPropagation();
+                selectedFiles = selectedFiles.filter(f => f !== file);
+                li.remove();
+                if (selectedFiles.length === 0) {
+                    document.getElementById('drop-zone-text').style.display = 'block';
+                    const existingListContainer = dropZone.querySelector('.file-list-container');
+                    if (existingListContainer) {
+                        existingListContainer.remove();
                     }
-                };
-            })(file, li);
+                }
+            };
+
             li.appendChild(removeButton);
             ul.appendChild(li);
         });
-        
+
         fileListContainer.appendChild(ul);
 
         const existingListContainer = dropZone.querySelector('.file-list-container');
@@ -129,16 +145,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (selectedFiles.length === 0) {
             document.getElementById('drop-zone-text').style.display = 'block';
-            if (fileListContainer) {
-                fileListContainer.remove();
-            }
+            fileListContainer.remove();
         }
     }
 
     function uploadFiles(files, targetFolder) {
         const formData = new FormData();
         let isFolderUpload = false;
-        
+
         if (files.length > 0 && files[0].webkitRelativePath) {
             isFolderUpload = files[0].webkitRelativePath.includes('/');
         }
@@ -156,20 +170,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', '/upload', true);
 
-        xhr.upload.onprogress = function(event) {
+        xhr.upload.onprogress = function (event) {
             if (event.lengthComputable) {
                 const percent = Math.round((event.loaded / event.total) * 100);
-                document.getElementById('progress-bar').style.width = percent + '%';
-                document.getElementById('progress-bar').textContent = percent + '%';
+                progressBar.style.width = percent + '%';
+                progressBar.textContent = percent + '%';
             }
         };
 
-        xhr.onload = function() {
+        xhr.onload = function () {
             if (xhr.status === 200) {
                 const response = JSON.parse(xhr.responseText);
                 alert(response.message);
-                document.getElementById('progress-bar').style.width = '0%';
-                document.getElementById('progress-bar').textContent = '0%';
+                progressBar.style.width = '0%';
+                progressBar.textContent = '0%';
                 window.location.reload();
             } else {
                 alert('上传失败');

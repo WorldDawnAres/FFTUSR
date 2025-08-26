@@ -270,7 +270,8 @@ class MainWindow(QMainWindow):
             "5.支持Windows和Linux系统\n"
             "6.支持用户认证可选功能(默认关闭),可自行增加删除用户，限制用户登录\n"
             "7.支持用户使用二维码访问地址\n"
-            "版本：v1.4\n\n"
+            "8.调整文件上传方式，支持多文件、文件夹上传\n"
+            "版本：v1.5\n\n"
             )
 
 class InterfaceSelectorDialog(QDialog):
