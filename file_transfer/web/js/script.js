@@ -1,15 +1,35 @@
 document.addEventListener('DOMContentLoaded', function() {
     const dropZone = document.getElementById('drop-zone');
     const fileInput = document.getElementById('file-input');
+    const folderInput = document.getElementById('folder-input');
     const uploadForm = document.getElementById('upload-form');
     const progressBar = document.getElementById('progress-bar');
     const clearBtn = document.getElementById('cancel-all-btn');
     let selectedFiles = [];
 
+    const fileSelectionButtons = document.createElement('div');
+    fileSelectionButtons.className = 'file-selection-buttons';
+    fileSelectionButtons.style.display = 'none';
+    
+    const selectFilesBtn = document.createElement('button');
+    selectFilesBtn.type = 'button';
+    selectFilesBtn.id = 'select-files-btn';
+    selectFilesBtn.textContent = '选择文件';
+    
+    const selectFolderBtn = document.createElement('button');
+    selectFolderBtn.type = 'button';
+    selectFolderBtn.id = 'select-folder-btn';
+    selectFolderBtn.textContent = '选择文件夹';
+    
+    fileSelectionButtons.appendChild(selectFilesBtn);
+    fileSelectionButtons.appendChild(selectFolderBtn);
+    dropZone.appendChild(fileSelectionButtons);
+
     if (clearBtn) {
         clearBtn.addEventListener('click', function () {
             selectedFiles = [];
             fileInput.value = '';
+            folderInput.value = '';
 
             const existingListContainer = dropZone.querySelector('.file-list-container');
             if (existingListContainer) {
@@ -17,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             document.getElementById('drop-zone-text').style.display = 'block';
+            fileSelectionButtons.style.display = 'none';
 
             progressBar.style.width = '0%';
             progressBar.textContent = '0%';
@@ -35,15 +56,42 @@ document.addEventListener('DOMContentLoaded', function() {
     dropZone.addEventListener('drop', (e) => {
         e.preventDefault();
         dropZone.classList.remove('drag-over');
-        handleFileSelection(e.dataTransfer.items);
+        
+        if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+            handleFileSelection(e.dataTransfer.items, true);
+        } else if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            handleFileSelection(e.dataTransfer.files, true);
+        }
     });
 
-    dropZone.addEventListener('click', () => {
+    dropZone.addEventListener('click', (e) => {
+        if (e.target.id === 'select-files-btn' || e.target.id === 'select-folder-btn' ||
+            e.target.className === 'file-selection-buttons') {
+            return;
+        }
+        
+        if (dropZone.querySelector('.file-list-container')) {
+            return;
+        }
+        
+        document.getElementById('drop-zone-text').style.display = 'none';
+        fileSelectionButtons.style.display = 'block';
+    });
+
+    selectFilesBtn.addEventListener('click', () => {
         fileInput.click();
     });
 
+    selectFolderBtn.addEventListener('click', () => {
+        folderInput.click();
+    });
+
     fileInput.addEventListener('change', (e) => {
-        handleFileSelection(e.target.files);
+        handleFileSelection(e.target.files, true);
+    });
+
+    folderInput.addEventListener('change', (e) => {
+        handleFileSelection(e.target.files, true);
     });
 
     uploadForm.addEventListener('submit', function (event) {
@@ -56,17 +104,35 @@ document.addEventListener('DOMContentLoaded', function() {
         uploadFiles(selectedFiles, targetFolder);
     });
 
-    async function handleFileSelection(input) {
-        selectedFiles = [];
-        const fileListContainer = document.createElement('div');
-        fileListContainer.className = 'file-list-container';
-        fileListContainer.style.width = '100%';
-        fileListContainer.style.maxHeight = '300px';
-        fileListContainer.style.overflowY = 'auto';
-        document.getElementById('drop-zone-text').style.display = 'none';
+    async function handleFileSelection(input, append = false) {
+        if (!append) {
+            selectedFiles = [];
+        }
+        
+        let newFiles = [];
+        let fileListContainer;
+        const existingListContainer = dropZone.querySelector('.file-list-container');
+        
+        if (existingListContainer && append) {
+            fileListContainer = existingListContainer;
+        } else {
+            fileListContainer = document.createElement('div');
+            fileListContainer.className = 'file-list-container';
+            fileListContainer.style.width = '100%';
+            fileListContainer.style.maxHeight = '300px';
+            fileListContainer.style.overflowY = 'auto';
+            document.getElementById('drop-zone-text').style.display = 'none';
+            fileSelectionButtons.style.display = 'none';
+            
+            if (existingListContainer) {
+                existingListContainer.remove();
+            }
+        }
 
-        const ul = document.createElement('ul');
-        ul.className = 'file-list';
+        const ul = existingListContainer && append ? existingListContainer.querySelector('.file-list') : document.createElement('ul');
+        if (!ul.className) {
+            ul.className = 'file-list';
+        }
 
         async function traverseFileTree(item, path) {
             path = path || "";
@@ -74,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return new Promise((resolve) => {
                     item.file((file) => {
                         file.webkitRelativePath = path + file.name;
-                        selectedFiles.push(file);
+                        newFiles.push(file);
                         resolve();
                     });
                 });
@@ -93,22 +159,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (input instanceof FileList) {
             for (let i = 0; i < input.length; i++) {
-                selectedFiles.push(input[i]);
+                newFiles.push(input[i]);
             }
         } else if (input instanceof DataTransferItemList) {
+            const promises = [];
             for (let i = 0; i < input.length; i++) {
                 const item = input[i].webkitGetAsEntry();
                 if (item) {
                     if (item.isDirectory) {
-                        await traverseFileTree(item, "");
+                        promises.push(traverseFileTree(item, ""));
                     } else {
-                        await traverseFileTree(item);
+                        promises.push(traverseFileTree(item));
                     }
                 }
             }
+            await Promise.all(promises);
         }
 
-        selectedFiles.forEach(file => {
+        selectedFiles = [...selectedFiles, ...newFiles];
+
+        newFiles.forEach(file => {
             const li = document.createElement('li');
             li.className = 'file-item';
             li.textContent = file.webkitRelativePath ? file.webkitRelativePath : file.name;
@@ -122,6 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 li.remove();
                 if (selectedFiles.length === 0) {
                     document.getElementById('drop-zone-text').style.display = 'block';
+                    fileSelectionButtons.style.display = 'none';
                     const existingListContainer = dropZone.querySelector('.file-list-container');
                     if (existingListContainer) {
                         existingListContainer.remove();
@@ -133,18 +204,17 @@ document.addEventListener('DOMContentLoaded', function() {
             ul.appendChild(li);
         });
 
-        fileListContainer.appendChild(ul);
-
-        const existingListContainer = dropZone.querySelector('.file-list-container');
-        if (existingListContainer) {
-            existingListContainer.remove();
+        if (!existingListContainer || !append) {
+            fileListContainer.appendChild(ul);
+            dropZone.appendChild(fileListContainer);
         }
-        dropZone.appendChild(fileListContainer);
 
         fileInput.value = '';
+        folderInput.value = '';
 
         if (selectedFiles.length === 0) {
             document.getElementById('drop-zone-text').style.display = 'block';
+            fileSelectionButtons.style.display = 'none';
             fileListContainer.remove();
         }
     }

@@ -113,6 +113,7 @@ input[type="file"]:focus, select:focus, input[type="submit"]:focus {
     background-color: #f9f9f9;
     color: #666;
     min-height: 100px; /* 确保拖放区域有最小高度 */
+    max-width: 487px;
     display: flex;
     flex-direction: column;
     justify-content: center;
