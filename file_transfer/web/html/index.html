@@ -10,17 +10,19 @@
 <body>
     <div class="container">
         <!-- 📤 文件上传 -->
-        <div class="upload-form">
+        <section class="upload-form">
             <h2>上传文件</h2>
             <div id="drop-zone">
-                <span id="drop-zone-text">点击此处选择上传文件/文件夹，</br>或直接拖拽文件/文件夹进行上传</span>
-                <div class="file-selection-buttons" style="display: none;">
-                    <button type="button" id="select-files-btn">选择文件</button>
-                    <button type="button" id="select-folder-btn">选择文件夹</button>
-                </div>
-                <input type="file" id="file-input" multiple style="display: none;">
-                <input type="file" id="folder-input" webkitdirectory multiple style="display: none;">
+                <span id="drop-zone-text">
+                    点击此处选择上传文件/文件夹，<br>
+                    或直接拖拽文件/文件夹进行上传
+                </span>
+                <div class="file-selection-buttons" style="display: none;"></div>
+
+                <input type="file" id="file-input" multiple hidden>
+                <input type="file" id="folder-input" webkitdirectory multiple hidden>
             </div>
+
             <form id="upload-form" method="post" action="/upload" enctype="multipart/form-data">
                 <label for="target_folder">选择目标文件夹：</label>
                 <select id="target_folder" name="target_folder">
@@ -30,16 +32,17 @@
                     {% endfor %}
                 </select>
                 <input type="submit" value="上传">
-            </br>
+                <br>
                 <button type="button" id="cancel-all-btn">清空全部上传区文件</button>
             </form>
+
             <div id="progress-container">
                 <div id="progress-bar">0%</div>
             </div>
-        </div>
+        </section>
 
         <!-- 📂 文件列表 -->
-        <div class="file-list">
+        <section class="file-list">
             <h1>文件列表</h1>
             <p>当前路径: /{{ current_path }}</p>
             <div class="user-controls">
@@ -59,11 +62,9 @@
                     </li>
                 {% endfor %}
             </ul>
-        </div>
+        </section>
     </div>
 
     <script src="../js/script.js"></script>
 </body>
 </html>
-<input type="file" id="file-input" multiple style="display: none;">
-<input type="file" id="folder-input" webkitdirectory multiple style="display: none;">

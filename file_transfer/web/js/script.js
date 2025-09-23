@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const clearBtn = document.getElementById('cancel-all-btn');
     let selectedFiles = [];
 
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
     const fileSelectionButtons = document.createElement('div');
     fileSelectionButtons.className = 'file-selection-buttons';
     fileSelectionButtons.style.display = 'none';
@@ -64,27 +66,33 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    dropZone.addEventListener('click', (e) => {
-        if (e.target.id === 'select-files-btn' || e.target.id === 'select-folder-btn' ||
-            e.target.className === 'file-selection-buttons') {
-            return;
-        }
-        
-        if (dropZone.querySelector('.file-list-container')) {
-            return;
-        }
-        
-        document.getElementById('drop-zone-text').style.display = 'none';
-        fileSelectionButtons.style.display = 'block';
-    });
+    if (isMobile) {
+        dropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+    } else {
+        dropZone.addEventListener('click', (e) => {
+            if (e.target.id === 'select-files-btn' || e.target.id === 'select-folder-btn' ||
+                e.target.className === 'file-selection-buttons') {
+                return;
+            }
+            
+            if (dropZone.querySelector('.file-list-container')) {
+                return;
+            }
+            
+            document.getElementById('drop-zone-text').style.display = 'none';
+            fileSelectionButtons.style.display = 'block';
+        });
 
-    selectFilesBtn.addEventListener('click', () => {
-        fileInput.click();
-    });
+        selectFilesBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
 
-    selectFolderBtn.addEventListener('click', () => {
-        folderInput.click();
-    });
+        selectFolderBtn.addEventListener('click', () => {
+            folderInput.click();
+        });
+    }
 
     fileInput.addEventListener('change', (e) => {
         handleFileSelection(e.target.files, true);
