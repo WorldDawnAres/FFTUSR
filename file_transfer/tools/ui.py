@@ -24,6 +24,7 @@ class MainWindow(QMainWindow):
         self.interface_frame = tool.get_local_ip()
         self.port_entry = 12345
         self.max_sessions = 10
+        self.max_concurrency = 10
         self.init_ui()
         self.create_menu()
     
@@ -35,6 +36,9 @@ class MainWindow(QMainWindow):
 
         self.port_label = QLabel(f"当前指定端口号：{self.port_entry}")
         layout.addWidget(self.port_label)
+
+        self.concurrency = QLabel(f"当前指定下载并发数：{self.max_concurrency}")
+        layout.addWidget(self.concurrency)
 
         self.log_widget = LogWidget()
         layout.addWidget(self.log_widget)
@@ -66,8 +70,12 @@ class MainWindow(QMainWindow):
         select_port_action.triggered.connect(self.select_port)
         server_menu.addAction(select_port_action)
 
+        select_concurrency_action = QAction("设置最大下载并发数", self)
+        select_concurrency_action.triggered.connect(self.select_concurrency)
+        server_menu.addAction(select_concurrency_action)
+
         server_start = QAction("启动服务器", self)
-        server_start.triggered.connect(lambda: tool.start_server(self.port_entry))
+        server_start.triggered.connect(lambda: tool.start_server(self.port_entry, self.max_concurrency))
         server_menu.addAction(server_start)
 
         exit_server = QAction("停止服务器", self)
@@ -169,6 +177,24 @@ class MainWindow(QMainWindow):
     def update_port_label(self):
         self.port_label.setText(f"当前指定端口号：{self.port_entry}")
         print(f"当前指定端口号：{self.port_entry}")
+    
+    def update_concurrency(self):
+        self.concurrency.setText(f"当前指定下载并发数：{self.max_concurrency}")
+        print(f"当前指定下载并发数：{self.max_concurrency}")
+
+    def select_concurrency(self):
+        value, ok = QInputDialog.getInt(
+            self,
+            "设置并发下载数",
+            "请输入最大下载并发数量（建议 2~50）:",
+            self.max_concurrency,
+            1,
+            500
+        )
+
+        if ok:
+            self.max_concurrency = value
+            self.update_concurrency()
 
     def set_max_sessions(self):
         sessions, ok = QInputDialog.getInt(self, "设置最大连接人数", "请输入最大连接人数：", self.max_sessions, 1, 1000)
@@ -271,7 +297,8 @@ class MainWindow(QMainWindow):
             "6.支持用户认证可选功能(默认关闭),可自行增加删除用户，限制用户登录\n"
             "7.支持用户使用二维码访问地址\n"
             "8.调整文件上传方式，支持多文件、文件夹上传\n"
-            "版本：v1.5\n\n"
+            "9.支持自定义指定下载并发数（默认为10）\n"
+            "版本：v1.51\n\n"
             )
 
 class InterfaceSelectorDialog(QDialog):

@@ -110,4 +110,5 @@ DEFAULT_TARGET_FOLDER = os.path.abspath(config_manager.config.get("target_folder
 SHARED_FOLDER = DEFAULT_SHARED_FOLDER
 TARGET_FOLDER = DEFAULT_TARGET_FOLDER
 PORT = 12345
+max_concurrency = 10
 UPLOAD_PROGRESS = {}

@@ -3,6 +3,7 @@ from PySide6.QtWidgets import QFileDialog
 import psutil,webbrowser,platform,subprocess,threading
 from gevent.pywsgi import WSGIServer
 from gevent import socket
+from gevent.pool import Pool
 
 flask_server_process = None
 selected_ip = None
@@ -81,10 +82,11 @@ def stop_flask_server():
     else:
         print("没有运行中的服务器。")
 
-def start_server(port_entry):
-    global flask_thread,selected_ip
+def start_server(port_entry, max_concurrency):
+    global flask_thread,selected_ip, MAX_CONCURRENCY
     try:
         new_port = port_entry
+        new_concurrency = max_concurrency
         if new_port < 1024 or new_port > 65535:
             print("端口号无效，请输入有效的端口号（范围：1024-65535）", "red")
             return
@@ -94,6 +96,7 @@ def start_server(port_entry):
 
     global PORT
     PORT = new_port
+    MAX_CONCURRENCY = new_concurrency
 
     if not selected_ip:
         selected_ip = get_local_ip()
@@ -175,8 +178,9 @@ def get_local_ip():
     return ip
 
 def run_flask_server(ip_address):
-    global flask_server_process
+    global flask_server_process, MAX_CONCURRENCY
     local_ip = get_local_ip()
+    pool = Pool(MAX_CONCURRENCY)
     if local_ip:
         print(f"服务器可用的本地 IP 地址: {local_ip}")
     else:
@@ -184,10 +188,10 @@ def run_flask_server(ip_address):
 
     if config.cert_file is None or config.key_file is None:
         print(f"访问 http://{ip_address}:{PORT}/files 查看文件列表")
-        flask_server_process = WSGIServer((ip_address, PORT), server.app)
+        flask_server_process = WSGIServer((ip_address, PORT), server.app, spawn=pool)
     else:
         print(f"访问 https://{ip_address}:{PORT}/files 查看文件列表")
-        flask_server_process = WSGIServer((ip_address, PORT), server.app, keyfile=config.key_file, certfile=config.cert_file)
+        flask_server_process = WSGIServer((ip_address, PORT), server.app, keyfile=config.key_file, certfile=config.cert_file, spawn=pool)
     flask_server_process.serve_forever()
 
 def generate_qr_code(ip_address, port):
